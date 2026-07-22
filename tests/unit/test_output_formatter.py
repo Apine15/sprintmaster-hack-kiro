@@ -151,9 +151,9 @@ class TestWrite:
         tickets = formatter.parse_and_validate(valid_raw_response)
         formatter.write(tickets, self._make_args())
         captured = capsys.readouterr()
-        # Should be valid YAML
-        data = yaml.safe_load(captured.out)
-        assert isinstance(data, list)
+        # Should be valid YAML — each ticket is rendered individually
+        data = list(yaml.safe_load_all(captured.out))
+        assert len(data) == 1
         assert data[0]["title"] == "Implement login"
 
     def test_format_json_produces_valid_json(self, formatter, valid_raw_response, capsys):
@@ -161,17 +161,19 @@ class TestWrite:
         tickets = formatter.parse_and_validate(valid_raw_response)
         formatter.write(tickets, self._make_args(fmt="json"))
         captured = capsys.readouterr()
+        # Each ticket is rendered as an individual JSON object
         data = json.loads(captured.out)
-        assert isinstance(data, list)
-        assert data[0]["title"] == "Implement login"
+        assert isinstance(data, dict)
+        assert data["title"] == "Implement login"
 
     def test_format_yaml_produces_valid_yaml(self, formatter, valid_raw_response, capsys):
         """Requirement 4.3: --format yaml produces valid YAML."""
         tickets = formatter.parse_and_validate(valid_raw_response)
         formatter.write(tickets, self._make_args(fmt="yaml"))
         captured = capsys.readouterr()
-        data = yaml.safe_load(captured.out)
-        assert isinstance(data, list)
+        # Each ticket is rendered individually
+        data = list(yaml.safe_load_all(captured.out))
+        assert len(data) == 1
         assert data[0]["title"] == "Implement login"
 
     def test_no_output_flag_writes_to_stdout(self, formatter, valid_raw_response, capsys):
@@ -190,8 +192,8 @@ class TestWrite:
         try:
             formatter.write(tickets, self._make_args(output=path))
             with open(path, encoding="utf-8") as f:
-                data = yaml.safe_load(f)
-            assert isinstance(data, list)
+                data = list(yaml.safe_load_all(f))
+            assert len(data) == 1
             assert data[0]["title"] == "Implement login"
         finally:
             os.unlink(path)
@@ -206,8 +208,8 @@ class TestWrite:
             formatter.write(tickets, self._make_args(fmt="json", output=path))
             with open(path, encoding="utf-8") as f:
                 data = json.load(f)
-            assert isinstance(data, list)
-            assert data[0]["title"] == "Implement login"
+            assert isinstance(data, dict)
+            assert data["title"] == "Implement login"
         finally:
             os.unlink(path)
 
@@ -216,7 +218,7 @@ class TestWrite:
         tickets = formatter.parse_and_validate(valid_raw_response)
         formatter.write(tickets, self._make_args())
         captured = capsys.readouterr()
-        data = yaml.safe_load(captured.out)
+        data = list(yaml.safe_load_all(captured.out))
         required_fields = {"title", "description", "acceptance_criteria",
                            "story_points", "priority", "assignee"}
         for ticket in data:
@@ -227,11 +229,11 @@ class TestWrite:
         tickets = formatter.parse_and_validate(valid_raw_response)
         formatter.write(tickets, self._make_args(fmt="json"))
         captured = capsys.readouterr()
+        # Single ticket rendered as individual JSON object
         data = json.loads(captured.out)
         required_fields = {"title", "description", "acceptance_criteria",
                            "story_points", "priority", "assignee"}
-        for ticket in data:
-            assert required_fields.issubset(ticket.keys())
+        assert required_fields.issubset(data.keys())
 
     def test_format_none_defaults_to_yaml(self, formatter, valid_raw_response, capsys):
         """When format is None, defaults to YAML."""
@@ -239,5 +241,140 @@ class TestWrite:
         args = argparse.Namespace(format=None, output=None)
         formatter.write(tickets, args)
         captured = capsys.readouterr()
+        data = list(yaml.safe_load_all(captured.out))
+        assert len(data) == 1
+        assert isinstance(data[0], dict)
+
+
+class TestRenderPlain:
+    """Tests for _render_plain method.
+
+    Validates requirements 6.2, 7.3, 8.3, 8.4.
+    """
+
+    def test_single_ticket_yaml_to_stdout_no_ansi(self, formatter, capsys):
+        """Req 7.3, 8.3: single ticket to stdout has no ANSI and no leading/trailing blank lines."""
+        ticket_data = [make_valid_ticket_dict()]
+        formatter._render_plain(ticket_data, "yaml", None)
+        captured = capsys.readouterr()
+        # No ANSI escape sequences
+        assert "\x1b" not in captured.out
+        # No leading blank line
+        assert not captured.out.startswith("\n")
+        # No trailing blank line (only single trailing newline is OK)
+        lines = captured.out.split("\n")
+        # Strip the final newline added for terminal friendliness
+        if lines and lines[-1] == "":
+            lines = lines[:-1]
+        assert lines[0] != ""  # no leading blank
+        assert lines[-1] != ""  # no trailing blank
+
+    def test_single_ticket_json_to_stdout_no_ansi(self, formatter, capsys):
+        """Req 7.3: single JSON ticket to stdout has no ANSI."""
+        ticket_data = [make_valid_ticket_dict()]
+        formatter._render_plain(ticket_data, "json", None)
+        captured = capsys.readouterr()
+        assert "\x1b" not in captured.out
+        parsed = json.loads(captured.out)
+        assert parsed["title"] == "Implement login"
+
+    def test_multiple_tickets_yaml_blank_line_separation(self, formatter, capsys):
+        """Req 8.1, 8.2, 8.4: multiple tickets separated by exactly one blank line."""
+        tickets_data = [
+            make_valid_ticket_dict(title="Ticket 1"),
+            make_valid_ticket_dict(title="Ticket 2"),
+            make_valid_ticket_dict(title="Ticket 3"),
+        ]
+        formatter._render_plain(tickets_data, "yaml", None)
+        captured = capsys.readouterr()
+        # Count blank line separators: should be exactly 2 (N-1)
+        # A blank line separator is \n\n between blocks
+        content = captured.out.rstrip("\n")
+        assert content.count("\n\n") == 2
+        # No leading blank line
+        assert not content.startswith("\n")
+
+    def test_multiple_tickets_json_blank_line_separation(self, formatter, capsys):
+        """Req 8.1, 8.4: multiple JSON tickets separated by blank lines."""
+        tickets_data = [
+            make_valid_ticket_dict(title="Ticket A"),
+            make_valid_ticket_dict(title="Ticket B"),
+        ]
+        formatter._render_plain(tickets_data, "json", None)
+        captured = capsys.readouterr()
+        content = captured.out.rstrip("\n")
+        # Should contain one blank line separator between the two JSON blocks
+        parts = content.split("\n\n")
+        assert len(parts) == 2
+        # Each part should be valid JSON
+        parsed_a = json.loads(parts[0])
+        parsed_b = json.loads(parts[1])
+        assert parsed_a["title"] == "Ticket A"
+        assert parsed_b["title"] == "Ticket B"
+
+    def test_yaml_to_file_no_ansi(self, formatter):
+        """Req 6.2: YAML written to file has no Rich styling or ANSI."""
+        tickets_data = [make_valid_ticket_dict()]
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            path = f.name
+        try:
+            formatter._render_plain(tickets_data, "yaml", path)
+            with open(path, encoding="utf-8") as f:
+                content = f.read()
+            assert "\x1b" not in content
+            data = yaml.safe_load(content)
+            assert data["title"] == "Implement login"
+        finally:
+            os.unlink(path)
+
+    def test_json_to_file_no_ansi(self, formatter):
+        """Req 7.3: JSON written to file has no ANSI escape codes."""
+        tickets_data = [make_valid_ticket_dict()]
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+            path = f.name
+        try:
+            formatter._render_plain(tickets_data, "json", path)
+            with open(path, encoding="utf-8") as f:
+                content = f.read()
+            assert "\x1b" not in content
+            data = json.loads(content)
+            assert data["title"] == "Implement login"
+        finally:
+            os.unlink(path)
+
+    def test_multiple_tickets_to_file_same_spacing_as_stdout(self, formatter, capsys):
+        """Req 8.4: file output uses same blank-line separation as stdout."""
+        tickets_data = [
+            make_valid_ticket_dict(title="File Ticket 1"),
+            make_valid_ticket_dict(title="File Ticket 2"),
+        ]
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            path = f.name
+        try:
+            formatter._render_plain(tickets_data, "yaml", path)
+            with open(path, encoding="utf-8") as f:
+                file_content = f.read().rstrip("\n")
+            # One blank line separator between two tickets
+            assert file_content.count("\n\n") == 1
+            assert not file_content.startswith("\n")
+        finally:
+            os.unlink(path)
+
+    def test_yaml_output_is_parseable(self, formatter, capsys):
+        """Req 6.2: plain YAML output is valid YAML parseable by standard libraries."""
+        tickets_data = [make_valid_ticket_dict()]
+        formatter._render_plain(tickets_data, "yaml", None)
+        captured = capsys.readouterr()
         data = yaml.safe_load(captured.out)
-        assert isinstance(data, list)
+        assert data["title"] == "Implement login"
+        assert data["story_points"] == 5
+
+    def test_serialization_preserves_all_fields(self, formatter, capsys):
+        """All ticket fields are present in plain output."""
+        ticket = make_valid_ticket_dict()
+        formatter._render_plain([ticket], "yaml", None)
+        captured = capsys.readouterr()
+        data = yaml.safe_load(captured.out)
+        for key in ("title", "description", "acceptance_criteria",
+                    "story_points", "priority", "assignee"):
+            assert key in data

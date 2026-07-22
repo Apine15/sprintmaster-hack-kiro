@@ -69,14 +69,14 @@ Integrate the Rich library into SprintMaster's CLI to replace plain `print()` ca
 - [ ] 3. Checkpoint - Verify Logger implementation
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement Rich-based OutputFormatter
-  - [ ] 4.1 Add Rich Console instance to OutputFormatter
+- [x] 4. Implement Rich-based OutputFormatter
+  - [x] 4.1 Add Rich Console instance to OutputFormatter
     - Import `Console` from `rich.console` and `Syntax` from `rich.syntax`
     - Add `_stdout_console = Console(file=sys.stdout)` in `__init__`
     - Define `TICKET_KEYS` constant: `{"title", "description", "acceptance_criteria", "story_points", "priority", "assignee"}`
     - _Requirements: 6.1, 7.1_
 
-  - [ ] 4.2 Implement syntax-highlighted YAML rendering
+  - [x] 4.2 Implement syntax-highlighted YAML rendering
     - Add `_render_yaml_highlighted()` method using `rich.syntax.Syntax` with "yaml" lexer
     - Apply bold cyan styling to the six ticket keys
     - Insert one blank line between consecutive ticket blocks
@@ -84,13 +84,13 @@ Integrate the Rich library into SprintMaster's CLI to replace plain `print()` ca
     - Wrap `Syntax()` in try/except to fall back to plain text on failure
     - _Requirements: 6.1, 7.1, 7.2, 8.1, 8.2_
 
-  - [ ] 4.3 Implement plain text rendering for file and non-TTY output
+  - [x] 4.3 Implement plain text rendering for file and non-TTY output
     - Add `_render_plain()` method for file output and piped stdout
     - Write plain YAML/JSON without Rich styling or ANSI escape sequences
     - Apply same blank-line separation rules between tickets
     - _Requirements: 6.2, 7.3, 8.3, 8.4_
 
-  - [ ] 4.4 Modify write() method to route between styled and plain rendering
+  - [x] 4.4 Modify write() method to route between styled and plain rendering
     - Detect TTY via `self._stdout_console.is_terminal` (or `sys.stdout.isatty()`)
     - Route to `_render_yaml_highlighted()` for YAML + TTY
     - Route to `_render_plain()` for file output, JSON, or non-TTY

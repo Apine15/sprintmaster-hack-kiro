@@ -1,0 +1,1 @@
+"""SprintMaster test suite."""

@@ -1,0 +1,2 @@
+[console_scripts]
+sprintmaster = sprintmaster.cli:main

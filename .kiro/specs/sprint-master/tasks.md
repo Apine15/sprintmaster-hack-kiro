@@ -89,8 +89,8 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
 - [ ] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement CLI argument parsing and input resolution
-  - [ ] 5.1 Implement argument parser in `sprintmaster/cli.py`
+- [x] 5. Implement CLI argument parsing and input resolution
+  - [x] 5.1 Implement argument parser in `sprintmaster/cli.py`
     - Configure argparse with: positional `feature_description` (optional), `--file`, `--team-config`, `--format` (yaml/json, default yaml), `--output`, `--lambda-url`, `--model`, `--verbose`, `--quiet`, `--version`
     - Add usage examples in epilog for --help output
     - Implement `resolve_input(args)` to handle: positional arg > --file > stdin priority
@@ -113,8 +113,8 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - Test: --format with invalid value → Exit_Code 1
     - _Requirements: 1.4, 1.5, 1.7, 7.1, 7.2_
 
-- [ ] 6. Implement Logger and verbosity modes
-  - [ ] 6.1 Implement Logger class in `sprintmaster/logger.py`
+- [x] 6. Implement Logger and verbosity modes
+  - [-] 6.1 Implement Logger class in `sprintmaster/logger.py`
     - Implement `progress(msg)` for standard mode indicator
     - Implement `verbose(msg)` shown only with --verbose flag
     - Implement `warning(msg)` always to stderr
@@ -124,7 +124,7 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
 - [ ] 7. Implement Lambda function with Prompt Builder
-  - [ ] 7.1 Implement Prompt Builder in `lambda/prompt_builder.py`
+  - [x] 7.1 Implement Prompt Builder in `lambda/prompt_builder.py`
     - Implement `build_messages(feature_description, team_config)` returning (system_prompt, messages)
     - BASE_SYSTEM_PROMPT instructs model to return JSON with `tickets` array, Fibonacci story points, priority levels
     - When team_config provided: inject team members context into system prompt for intelligent assignment

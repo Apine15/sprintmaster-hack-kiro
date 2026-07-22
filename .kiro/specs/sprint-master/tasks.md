@@ -40,8 +40,8 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - Verify: Ticket with invalid priority value raises ValidationError
     - **Validates: Requirements 5.6**
 
-- [ ] 2. Implement Output Formatter with serialization and validation
-  - [ ] 2.1 Implement OutputFormatter class in `sprintmaster/output_formatter.py`
+- [x] 2. Implement Output Formatter with serialization and validation
+  - [x] 2.1 Implement OutputFormatter class in `sprintmaster/output_formatter.py`
     - Implement `parse_and_validate(raw: dict) -> list[Ticket]` that parses raw response, validates each ticket, emits warnings to stderr for invalid tickets, and returns only valid tickets
     - Implement `write(tickets: list[Ticket], args) -> None` that serializes to YAML (default) or JSON and writes to stdout or file (--output flag)
     - Handle case where all tickets are invalid (exit with EXIT_SERVICE_ERROR)
@@ -60,8 +60,8 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - Verify: each serialized ticket contains all six fields (title, description, acceptance_criteria, story_points, priority, assignee)
     - **Validates: Requirements 4.6**
 
-- [ ] 3. Implement Lambda Client with retries and error handling
-  - [ ] 3.1 Implement LambdaClient class in `sprintmaster/lambda_client.py`
+- [x] 3. Implement Lambda Client with retries and error handling
+  - [x] 3.1 Implement LambdaClient class in `sprintmaster/lambda_client.py`
     - Implement `__init__` reading URL from args.lambda_url or `SPRINTMASTER_LAMBDA_URL` env var
     - Implement `send(payload: dict) -> dict` with HTTP POST, 30s timeout
     - Implement exponential backoff retry for HTTP 429 (max 3 retries, base 1s)

@@ -7,12 +7,16 @@ between LambdaClient, OutputFormatter, and Logger.
 import argparse
 import os
 import sys
+import time
 from pathlib import Path
 
 import yaml
 from pydantic import ValidationError
 
-from sprintmaster.models import EXIT_USER_ERROR, TeamConfig
+from sprintmaster.lambda_client import LambdaClient
+from sprintmaster.logger import Logger
+from sprintmaster.models import EXIT_SUCCESS, EXIT_USER_ERROR, TeamConfig
+from sprintmaster.output_formatter import OutputFormatter
 
 __version__ = "0.1.0"
 
@@ -238,8 +242,66 @@ def load_team_config(args: argparse.Namespace) -> TeamConfig | None:
 
 def main() -> None:
     """Entry point registered in pyproject.toml as console_scripts."""
-    print("SprintMaster CLI - not yet implemented")
-    sys.exit(0)
+    args = parse_args()
+    logger = Logger(verbose=args.verbose, quiet=args.quiet)
+
+    # Resolve feature description input
+    try:
+        feature_description = resolve_input(args)
+    except FileNotFoundInputError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+    except InputError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+
+    # Load optional team configuration
+    try:
+        team_config = load_team_config(args)
+    except TeamConfigFileNotFoundError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+    except TeamConfigInvalidYAMLError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+    except TeamConfigValidationError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+
+    # Build request payload
+    payload = {
+        "feature_description": feature_description,
+        "team_config": team_config.model_dump() if team_config else None,
+        "model_id": args.model,
+    }
+
+    # Send request to Lambda backend
+    logger.progress("Generating tickets...")
+    start_time = time.time()
+    client = LambdaClient(args)
+    raw_response = client.send(payload)
+    end_time = time.time()
+    processing_time = end_time - start_time
+
+    # Display verbose metadata if requested
+    if args.verbose:
+        token_usage = raw_response.get("token_usage", {})
+        logger.verbose_metadata(
+            model_id=raw_response.get("model_id", args.model),
+            region=raw_response.get("region", "unknown"),
+            input_tokens=token_usage.get("input", 0),
+            output_tokens=token_usage.get("output", 0),
+            processing_time=processing_time,
+        )
+
+    # Parse, validate, and write output
+    logger.progress("Processing response...")
+    formatter = OutputFormatter()
+    tickets = formatter.parse_and_validate(raw_response)
+    formatter.write(tickets, args)
+
+    logger.progress(f"Done! Generated {len(tickets)} ticket(s).")
+    sys.exit(EXIT_SUCCESS)
 
 
 if __name__ == "__main__":

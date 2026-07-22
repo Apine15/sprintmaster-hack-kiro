@@ -5,6 +5,7 @@ ENV/
 
 # Archivos compilados de Python
 __pycache__/
+sprintmaster/__pycache__/
 *.py[cod]
 *$py.class
 

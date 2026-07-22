@@ -123,7 +123,7 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - With --verbose: show model_id, AWS region, token usage, processing time
     - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 7. Implement Lambda function with Prompt Builder
+- [x] 7. Implement Lambda function with Prompt Builder
   - [x] 7.1 Implement Prompt Builder in `lambda/prompt_builder.py`
     - Implement `build_messages(feature_description, team_config)` returning (system_prompt, messages)
     - BASE_SYSTEM_PROMPT instructs model to return JSON with `tickets` array, Fibonacci story points, priority levels
@@ -131,7 +131,7 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - When no team_config: instruct model to set assignee to "unassigned"
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-  - [ ] 7.2 Implement Lambda handler in `lambda/handler.py`
+  - [x] 7.2 Implement Lambda handler in `lambda/handler.py`
     - Implement `lambda_handler(event, context)` that:
       - Parses request body (feature_description, team_config, model_id)
       - Calls Prompt_Builder to get system_prompt and messages
@@ -145,8 +145,8 @@ SprintMaster es una CLI en Python que descompone descripciones de funcionalidade
     - Test: system prompt instructs Fibonacci story points and priority values
     - _Requirements: 3.1, 3.2, 3.5, 3.6, 3.7, 3.8_
 
-- [ ] 8. Wire CLI entry point and integrate all components
-  - [ ] 8.1 Implement main() entry point in `sprintmaster/cli.py`
+- [x] 8. Wire CLI entry point and integrate all components
+  - [x] 8.1 Implement main() entry point in `sprintmaster/cli.py`
     - Wire together: parse_args → resolve_input → load_team_config → build_request_payload → LambdaClient.send → OutputFormatter.parse_and_validate → OutputFormatter.write
     - Integrate Logger for progress/verbose/quiet modes
     - Handle all exit codes appropriately

@@ -1,0 +1,10 @@
+Contexto del Proyecto: GymBro. Aplicación PWA con arquitectura monorepo para gestión administrativa de gimnasios y seguimiento de entrenamiento físico.
+
+Funcionalidad a implementar: Módulo de Asignación de Rutinas Personalizadas.
+
+Descripción y Requisitos:
+Necesitamos construir el módulo core donde los administradores del gimnasio asignan rutinas a los atletas. El trabajo incluye:
+1. Modelado de la base de datos para almacenar el catálogo de ejercicios, las series y las repeticiones.
+2. Desarrollo de los endpoints de la API REST para el CRUD de las rutinas.
+3. Maquetación e implementación de la interfaz en la PWA para que el atleta visualice su rutina diaria y marque los ejercicios como completados.
+4. Configuración del entorno Docker y actualización de los pipelines de despliegue para soportar este nuevo módulo.

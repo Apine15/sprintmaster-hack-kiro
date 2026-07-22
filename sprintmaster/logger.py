@@ -6,7 +6,7 @@ verbose, and quiet modes. All non-ticket output goes to stderr.
 
 from __future__ import annotations
 
-import sys
+from rich.console import Console
 
 
 class Logger:
@@ -21,6 +21,8 @@ class Logger:
     def __init__(self, *, verbose: bool = False, quiet: bool = False) -> None:
         self._verbose = verbose
         self._quiet = quiet
+        self._console = Console(stderr=True, highlight=False)
+        self._status = None  # Active status context (spinner)
 
     @property
     def is_verbose(self) -> bool:
@@ -32,14 +34,31 @@ class Logger:
         """Return whether quiet mode is active."""
         return self._quiet
 
-    def progress(self, msg: str) -> None:
-        """Print a progress indicator to stderr.
+    def banner(self) -> None:
+        """Print 'SprintMaster' in bold + color. Suppressed in quiet mode."""
+        if not self._quiet:
+            self._console.print("SprintMaster", style="bold cyan")
 
-        Shown in standard mode. Suppressed in quiet mode.
-        """
+    def progress(self, msg: str) -> None:
+        """Display progress with animated spinner. Suppressed in quiet mode."""
         if self._quiet:
             return
-        print(msg, file=sys.stderr)
+        self.stop_progress()
+        self._status = self._console.status(msg)
+        self._status.start()
+
+    def start_progress(self, msg: str) -> None:
+        """Start an animated spinner with the given message."""
+        if self._quiet:
+            return
+        self._status = self._console.status(msg)
+        self._status.start()
+
+    def stop_progress(self) -> None:
+        """Stop the current animated spinner if one is active."""
+        if self._status:
+            self._status.stop()
+            self._status = None
 
     def verbose(self, msg: str) -> None:
         """Print verbose information to stderr.
@@ -50,21 +69,15 @@ class Logger:
             return
         if not self._verbose:
             return
-        print(msg, file=sys.stderr)
+        self._console.print(msg, style="dim")
 
     def warning(self, msg: str) -> None:
-        """Print a warning message to stderr.
-
-        Always shown, regardless of quiet/verbose mode.
-        """
-        print(f"Warning: {msg}", file=sys.stderr)
+        """Print '⚠️ Warning: {msg}' in yellow. Always shown."""
+        self._console.print(f"⚠️ Warning: {msg}", style="yellow")
 
     def error(self, msg: str) -> None:
-        """Print an error message to stderr.
-
-        Always shown, regardless of quiet/verbose mode.
-        """
-        print(f"Error: {msg}", file=sys.stderr)
+        """Print '❌ Error: {msg}' in red. Always shown."""
+        self._console.print(f"❌ Error: {msg}", style="bold red")
 
     def verbose_metadata(
         self,

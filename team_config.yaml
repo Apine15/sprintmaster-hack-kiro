@@ -1,0 +1,13 @@
+team:
+  - name: "Andrea Pineda"
+    role: "Product Manager & Frontend Lead"
+    stack: ["React", "TypeScript", "Vite", "Astro"]
+  - name: "Galo"
+    role: "Backend Developer"
+    stack: ["Python", "Django", "PostgreSQL", "SQLite"]
+  - name: "Molina"
+    role: "DevOps & Infrastructure"
+    stack: ["AWS EC2", "Docker", "Linux", "Nginx", "Gunicorn"]
+  - name: "José"
+    role: "Fullstack Developer"
+    stack: ["JavaScript", "Nest.js", "Prisma"]

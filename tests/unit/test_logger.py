@@ -1,6 +1,7 @@
 """Unit tests for sprintmaster.logger.Logger."""
 
 import sys
+from unittest.mock import MagicMock, patch
 
 from sprintmaster.logger import Logger
 
@@ -8,28 +9,85 @@ from sprintmaster.logger import Logger
 class TestLoggerProgress:
     """Tests for Logger.progress() method."""
 
-    def test_progress_standard_mode(self, capsys):
-        """Progress messages are shown in standard mode (default)."""
+    def test_progress_standard_mode(self):
+        """Progress uses console.status() with spinner in standard mode."""
         logger = Logger()
+        mock_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_status)
         logger.progress("Processing...")
-        captured = capsys.readouterr()
-        assert captured.err == "Processing...\n"
-        assert captured.out == ""
+        logger._console.status.assert_called_once_with("Processing...")
+        mock_status.start.assert_called_once()
 
-    def test_progress_verbose_mode(self, capsys):
-        """Progress messages are shown in verbose mode."""
+    def test_progress_verbose_mode(self):
+        """Progress uses console.status() with spinner in verbose mode."""
         logger = Logger(verbose=True)
+        mock_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_status)
         logger.progress("Processing...")
-        captured = capsys.readouterr()
-        assert captured.err == "Processing...\n"
+        logger._console.status.assert_called_once_with("Processing...")
+        mock_status.start.assert_called_once()
 
     def test_progress_quiet_mode(self, capsys):
         """Progress messages are suppressed in quiet mode."""
         logger = Logger(quiet=True)
+        mock_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_status)
         logger.progress("Processing...")
+        logger._console.status.assert_not_called()
+        mock_status.start.assert_not_called()
         captured = capsys.readouterr()
         assert captured.err == ""
         assert captured.out == ""
+
+    def test_progress_stops_existing_spinner(self):
+        """Calling progress() stops any previously active spinner."""
+        logger = Logger()
+        mock_old_status = MagicMock()
+        logger._status = mock_old_status
+        mock_new_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_new_status)
+        logger.progress("New message")
+        mock_old_status.stop.assert_called_once()
+        mock_new_status.start.assert_called_once()
+
+
+class TestLoggerStartStopProgress:
+    """Tests for Logger.start_progress() and stop_progress() methods."""
+
+    def test_start_progress_creates_and_starts_spinner(self):
+        """start_progress creates a console.status and starts it."""
+        logger = Logger()
+        mock_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_status)
+        logger.start_progress("Loading...")
+        logger._console.status.assert_called_once_with("Loading...")
+        mock_status.start.assert_called_once()
+        assert logger._status is mock_status
+
+    def test_start_progress_suppressed_in_quiet_mode(self):
+        """start_progress does nothing in quiet mode."""
+        logger = Logger(quiet=True)
+        mock_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_status)
+        logger.start_progress("Loading...")
+        logger._console.status.assert_not_called()
+        assert logger._status is None
+
+    def test_stop_progress_stops_active_spinner(self):
+        """stop_progress stops the active status and resets to None."""
+        logger = Logger()
+        mock_status = MagicMock()
+        logger._status = mock_status
+        logger.stop_progress()
+        mock_status.stop.assert_called_once()
+        assert logger._status is None
+
+    def test_stop_progress_no_op_when_no_spinner(self):
+        """stop_progress does nothing when no spinner is active."""
+        logger = Logger()
+        assert logger._status is None
+        logger.stop_progress()  # Should not raise
+        assert logger._status is None
 
 
 class TestLoggerVerbose:
@@ -73,7 +131,7 @@ class TestLoggerWarning:
         logger = Logger()
         logger.warning("something unexpected")
         captured = capsys.readouterr()
-        assert captured.err == "Warning: something unexpected\n"
+        assert "⚠️ Warning: something unexpected" in captured.err
         assert captured.out == ""
 
     def test_warning_quiet_mode(self, capsys):
@@ -81,14 +139,14 @@ class TestLoggerWarning:
         logger = Logger(quiet=True)
         logger.warning("something unexpected")
         captured = capsys.readouterr()
-        assert captured.err == "Warning: something unexpected\n"
+        assert "⚠️ Warning: something unexpected" in captured.err
 
     def test_warning_verbose_mode(self, capsys):
         """Warnings are shown in verbose mode."""
         logger = Logger(verbose=True)
         logger.warning("something unexpected")
         captured = capsys.readouterr()
-        assert captured.err == "Warning: something unexpected\n"
+        assert "⚠️ Warning: something unexpected" in captured.err
 
 
 class TestLoggerError:
@@ -99,7 +157,7 @@ class TestLoggerError:
         logger = Logger()
         logger.error("connection failed")
         captured = capsys.readouterr()
-        assert captured.err == "Error: connection failed\n"
+        assert "❌ Error: connection failed" in captured.err
         assert captured.out == ""
 
     def test_error_quiet_mode(self, capsys):
@@ -107,14 +165,14 @@ class TestLoggerError:
         logger = Logger(quiet=True)
         logger.error("connection failed")
         captured = capsys.readouterr()
-        assert captured.err == "Error: connection failed\n"
+        assert "❌ Error: connection failed" in captured.err
 
     def test_error_verbose_mode(self, capsys):
         """Errors are shown in verbose mode."""
         logger = Logger(verbose=True)
         logger.error("connection failed")
         captured = capsys.readouterr()
-        assert captured.err == "Error: connection failed\n"
+        assert "❌ Error: connection failed" in captured.err
 
 
 class TestLoggerVerboseMetadata:
@@ -189,7 +247,10 @@ class TestLoggerStderrOnly:
     def test_no_stdout_output(self, capsys):
         """No Logger method should write to stdout."""
         logger = Logger(verbose=True)
+        mock_status = MagicMock()
+        logger._console.status = MagicMock(return_value=mock_status)
         logger.progress("progress msg")
+        logger.stop_progress()
         logger.verbose("verbose msg")
         logger.warning("warning msg")
         logger.error("error msg")

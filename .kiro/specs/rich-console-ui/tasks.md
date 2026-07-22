@@ -118,8 +118,8 @@ Integrate the Rich library into SprintMaster's CLI to replace plain `print()` ca
 - [ ] 5. Checkpoint - Verify OutputFormatter implementation
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Integration and wiring
-  - [ ] 6.1 Update cli.py to use new Logger features
+- [x] 6. Integration and wiring
+  - [x] 6.1 Update cli.py to use new Logger features
     - Add `logger.banner()` call immediately after Logger initialization (before any other output)
     - Replace `logger.progress("Generating tickets...")` with `logger.start_progress("Generating tickets...")`
     - Add `logger.stop_progress()` after Lambda response is received

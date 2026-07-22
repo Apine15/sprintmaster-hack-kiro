@@ -244,6 +244,7 @@ def main() -> None:
     """Entry point registered in pyproject.toml as console_scripts."""
     args = parse_args()
     logger = Logger(verbose=args.verbose, quiet=args.quiet)
+    logger.banner()
 
     # Resolve feature description input
     try:
@@ -276,12 +277,13 @@ def main() -> None:
     }
 
     # Send request to Lambda backend
-    logger.progress("Generating tickets...")
+    logger.start_progress("Generating tickets...")
     start_time = time.time()
     client = LambdaClient(args)
     raw_response = client.send(payload)
     end_time = time.time()
     processing_time = end_time - start_time
+    logger.stop_progress()
 
     # Display verbose metadata if requested
     if args.verbose:
@@ -295,10 +297,11 @@ def main() -> None:
         )
 
     # Parse, validate, and write output
-    logger.progress("Processing response...")
+    logger.start_progress("Processing response...")
     formatter = OutputFormatter()
     tickets = formatter.parse_and_validate(raw_response)
     formatter.write(tickets, args)
+    logger.stop_progress()
 
     logger.progress(f"Done! Generated {len(tickets)} ticket(s).")
     sys.exit(EXIT_SUCCESS)

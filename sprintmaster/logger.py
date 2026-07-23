@@ -52,6 +52,7 @@ class Logger:
             for i, line in enumerate(lines):
                 style = "bold cyan" if i < mid else "magenta"
                 self._console.print(line, style=style)
+            self._console.print("\n")
 
     def progress(self, msg: str) -> None:
         """Display progress with animated spinner. Suppressed in quiet mode."""

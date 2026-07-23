@@ -173,12 +173,28 @@ class OutputFormatter:
             if content and not content.endswith("\n"):
                 sys.stdout.write("\n")
 
+    def _humanize_key(self, key: str) -> str:
+        """Transform a snake_case key into a human-readable label.
+
+        Capitalizes the first letter and replaces underscores with spaces.
+        Examples: 'title' -> 'Title', 'story_points' -> 'Story points',
+                  'acceptance_criteria' -> 'Acceptance criteria'.
+
+        Args:
+            key: The raw snake_case key string.
+
+        Returns:
+            A human-readable version of the key.
+        """
+        return key.replace("_", " ").capitalize()
+
     def _render_yaml_highlighted(self, tickets_data: list[dict]) -> None:
         """Render YAML with syntax highlighting and bold cyan ticket keys to stdout.
 
         Uses Rich's Syntax object with the "yaml" lexer for highlighting.
         Applies bold cyan styling to the six ticket keys (title, description,
-        acceptance_criteria, story_points, priority, assignee).
+        acceptance_criteria, story_points, priority, assignee) and renders
+        them with human-readable labels (capitalized, spaces instead of underscores).
         Inserts one blank line between consecutive ticket blocks.
         Falls back to plain text on any rendering failure.
 
@@ -207,10 +223,11 @@ class OutputFormatter:
                     if match:
                         prefix, key, rest = match.groups()
                         if key in TICKET_KEYS:
-                            # Render key in bold cyan, rest in default style
+                            # Render key in bold cyan with human-readable label
+                            display_key = self._humanize_key(key)
                             text = Text()
                             text.append(prefix)
-                            text.append(key, style="bold cyan")
+                            text.append(display_key, style="bold cyan")
                             text.append(rest)
                             self._stdout_console.print(text)
                         else:

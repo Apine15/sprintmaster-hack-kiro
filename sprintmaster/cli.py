@@ -12,6 +12,7 @@ from pathlib import Path
 
 import yaml
 from pydantic import ValidationError
+from rich_argparse import RawDescriptionRichHelpFormatter
 
 from sprintmaster.lambda_client import LambdaClient
 from sprintmaster.logger import Logger
@@ -21,7 +22,8 @@ from sprintmaster.output_formatter import OutputFormatter
 __version__ = "0.1.0"
 
 EPILOG_EXAMPLES = """\
-examples:
+[bold]Examples:[/bold]
+
   # Feature description as positional argument
   sprintmaster "Implement user authentication with OAuth2"
 
@@ -81,11 +83,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     Returns:
         Parsed argument namespace.
     """
+    # Configure RichHelpFormatter styles to match the app palette
+    RawDescriptionRichHelpFormatter.styles["argparse.args"] = "cyan"
+    RawDescriptionRichHelpFormatter.styles["argparse.groups"] = "bold cyan"
+    RawDescriptionRichHelpFormatter.styles["argparse.metavar"] = "dim cyan"
+    RawDescriptionRichHelpFormatter.styles["argparse.prog"] = "bold white"
+    RawDescriptionRichHelpFormatter.styles["argparse.text"] = "default"
+
     parser = argparse.ArgumentParser(
         prog="sprintmaster",
         description="Decompose feature descriptions into structured agile tickets using AI.",
         epilog=EPILOG_EXAMPLES,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=RawDescriptionRichHelpFormatter,
     )
 
     parser.add_argument(

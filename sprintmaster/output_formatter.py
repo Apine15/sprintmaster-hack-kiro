@@ -23,8 +23,9 @@ TICKET_KEYS = {"title", "description", "acceptance_criteria", "story_points", "p
 class OutputFormatter:
     """Handles parsing, validation and serialization of ticket data."""
 
-    def __init__(self) -> None:
+    def __init__(self, logger=None) -> None:
         self._stdout_console = Console(file=sys.stdout)
+        self._logger = logger
 
     def parse_and_validate(self, raw: dict) -> list[Ticket]:
         """Parse raw Lambda response and validate each ticket.
@@ -64,10 +65,13 @@ class OutputFormatter:
 
         for i, ticket_data in enumerate(raw_tickets):
             if not isinstance(ticket_data, dict):
-                print(
-                    f"Advertencia: ticket #{i + 1} no es un objeto válido, omitido.",
-                    file=sys.stderr,
-                )
+                if self._logger:
+                    self._logger.warning(f"ticket #{i + 1} no es un objeto válido, omitido.")
+                else:
+                    print(
+                        f"Advertencia: ticket #{i + 1} no es un objeto válido, omitido.",
+                        file=sys.stderr,
+                    )
                 continue
 
             try:
@@ -75,10 +79,13 @@ class OutputFormatter:
                 valid_tickets.append(ticket)
             except ValidationError as e:
                 title = ticket_data.get("title", f"#{i + 1}")
-                print(
-                    f"Advertencia: ticket '{title}' es inválido y fue omitido: {e}",
-                    file=sys.stderr,
-                )
+                if self._logger:
+                    self._logger.warning(f"ticket '{title}' es inválido y fue omitido: {e}")
+                else:
+                    print(
+                        f"Advertencia: ticket '{title}' es inválido y fue omitido: {e}",
+                        file=sys.stderr,
+                    )
 
         if not valid_tickets:
             print(

@@ -298,10 +298,10 @@ def main() -> None:
 
     # Parse, validate, and write output
     logger.start_progress("Processing response...")
-    formatter = OutputFormatter()
+    formatter = OutputFormatter(logger=logger)
     tickets = formatter.parse_and_validate(raw_response)
-    formatter.write(tickets, args)
     logger.stop_progress()
+    formatter.write(tickets, args)
 
     logger.progress(f"Done! Generated {len(tickets)} ticket(s).")
     sys.exit(EXIT_SUCCESS)

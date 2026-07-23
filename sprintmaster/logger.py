@@ -9,6 +9,16 @@ from __future__ import annotations
 from rich.console import Console
 
 
+BANNER_ART = r"""
+ ____            _       _   __  __           _
+/ ___| _ __  _ __(_)_ __ | |_|  \/  | __ _ ___| |_ ___ _ __
+\___ \| '_ \| '__| | '_ \| __| |\/| |/ _` / __| __/ _ \ '__|
+ ___) | |_) | |  | | | | | |_| |  | | (_| \__ \ ||  __/ |
+|____/| .__/|_|  |_|_| |_|\__|_|  |_|\__,_|___/\__\___|_|
+      |_|
+""".strip("\n")
+
+
 class Logger:
     """Verbosity-aware logger that writes all output to stderr.
 
@@ -35,9 +45,13 @@ class Logger:
         return self._quiet
 
     def banner(self) -> None:
-        """Print 'SprintMaster' in bold + color. Suppressed in quiet mode."""
+        """Print ASCII art banner with gradient colors. Suppressed in quiet mode."""
         if not self._quiet:
-            self._console.print("SprintMaster", style="bold cyan")
+            lines = BANNER_ART.splitlines()
+            mid = len(lines) // 2
+            for i, line in enumerate(lines):
+                style = "bold cyan" if i < mid else "magenta"
+                self._console.print(line, style=style)
 
     def progress(self, msg: str) -> None:
         """Display progress with animated spinner. Suppressed in quiet mode."""
@@ -72,12 +86,12 @@ class Logger:
         self._console.print(msg, style="dim")
 
     def warning(self, msg: str) -> None:
-        """Print '⚠️ Warning: {msg}' in yellow. Always shown."""
-        self._console.print(f"⚠️ Warning: {msg}", style="yellow")
+        """Print '[!] Warning: {msg}' in yellow. Always shown."""
+        self._console.print(f"[!] Warning: {msg}", style="yellow", markup=False)
 
     def error(self, msg: str) -> None:
-        """Print '❌ Error: {msg}' in red. Always shown."""
-        self._console.print(f"❌ Error: {msg}", style="bold red")
+        """Print '[x] Error: {msg}' in red. Always shown."""
+        self._console.print(f"[x] Error: {msg}", style="bold red", markup=False)
 
     def verbose_metadata(
         self,

@@ -131,7 +131,7 @@ class TestLoggerWarning:
         logger = Logger()
         logger.warning("something unexpected")
         captured = capsys.readouterr()
-        assert "⚠️ Warning: something unexpected" in captured.err
+        assert "[!] Warning: something unexpected" in captured.err
         assert captured.out == ""
 
     def test_warning_quiet_mode(self, capsys):
@@ -139,14 +139,14 @@ class TestLoggerWarning:
         logger = Logger(quiet=True)
         logger.warning("something unexpected")
         captured = capsys.readouterr()
-        assert "⚠️ Warning: something unexpected" in captured.err
+        assert "[!] Warning: something unexpected" in captured.err
 
     def test_warning_verbose_mode(self, capsys):
         """Warnings are shown in verbose mode."""
         logger = Logger(verbose=True)
         logger.warning("something unexpected")
         captured = capsys.readouterr()
-        assert "⚠️ Warning: something unexpected" in captured.err
+        assert "[!] Warning: something unexpected" in captured.err
 
 
 class TestLoggerError:
@@ -157,7 +157,7 @@ class TestLoggerError:
         logger = Logger()
         logger.error("connection failed")
         captured = capsys.readouterr()
-        assert "❌ Error: connection failed" in captured.err
+        assert "[x] Error: connection failed" in captured.err
         assert captured.out == ""
 
     def test_error_quiet_mode(self, capsys):
@@ -165,14 +165,14 @@ class TestLoggerError:
         logger = Logger(quiet=True)
         logger.error("connection failed")
         captured = capsys.readouterr()
-        assert "❌ Error: connection failed" in captured.err
+        assert "[x] Error: connection failed" in captured.err
 
     def test_error_verbose_mode(self, capsys):
         """Errors are shown in verbose mode."""
         logger = Logger(verbose=True)
         logger.error("connection failed")
         captured = capsys.readouterr()
-        assert "❌ Error: connection failed" in captured.err
+        assert "[x] Error: connection failed" in captured.err
 
 
 class TestLoggerVerboseMetadata:

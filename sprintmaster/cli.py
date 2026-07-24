@@ -136,6 +136,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Bedrock model ID (default: us.anthropic.claude-3-haiku-20240307-v1:0)",
     )
     parser.add_argument(
+        "--lang", "-l",
+        default="English",
+        metavar="LANGUAGE",
+        help="Language for generated ticket content (default: English)",
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Show detailed progress and response metadata",
@@ -255,6 +261,15 @@ def main() -> None:
     logger = Logger(verbose=args.verbose, quiet=args.quiet)
     logger.banner()
 
+    # Validate --lang argument
+    args.lang = args.lang.strip()
+    if not args.lang:
+        print("Error: --lang value must not be blank", file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+    if len(args.lang) > 50:
+        print("Error: --lang value exceeds maximum length of 50 characters", file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+
     # Resolve feature description input
     try:
         feature_description = resolve_input(args)
@@ -283,6 +298,7 @@ def main() -> None:
         "feature_description": feature_description,
         "team_config": team_config.model_dump() if team_config else None,
         "model_id": args.model,
+        "language": args.lang,
     }
 
     # Send request to Lambda backend

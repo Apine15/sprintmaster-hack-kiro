@@ -84,6 +84,14 @@ class LambdaRequestPayload(BaseModel):
     feature_description: str
     team_config: TeamConfig | None = None
     model_id: str = "us.anthropic.claude-3-haiku-20240307-v1:0"
+    language: str = Field(default="English", max_length=50)
+
+    @field_validator("language")
+    @classmethod
+    def language_must_not_be_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("language must not be empty or whitespace-only")
+        return v
 
 
 class TokenUsage(BaseModel):

@@ -41,14 +41,14 @@ class Ticket(BaseModel):
     @classmethod
     def must_be_fibonacci(cls, v: int) -> int:
         if v not in FIBONACCI:
-            raise ValueError(f"story_points {v} no es un valor Fibonacci válido")
+            raise ValueError(f"story_points {v} is not a valid Fibonacci value")
         return v
 
     @field_validator("assignee")
     @classmethod
     def must_be_non_empty(cls, v: str) -> str:
         if not v.strip():
-            raise ValueError("assignee no puede ser una cadena vacía")
+            raise ValueError("assignee cannot be an empty string")
         return v
 
     @field_validator("dependencies")
@@ -56,11 +56,11 @@ class Ticket(BaseModel):
     def validate_dependencies(cls, v: list[str]) -> list[str]:
         for item in v:
             if not item.strip():
-                raise ValueError("los elementos de dependencias no pueden ser vacíos")
+                raise ValueError("dependency elements cannot be empty or whitespace-only")
             if len(item) > 200:
-                raise ValueError(f"el elemento de dependencia excede 200 caracteres: {item[:50]}...")
+                raise ValueError(f"dependency element exceeds 200 characters: {item[:50]}...")
         if len(v) != len(set(v)):
-            raise ValueError("las dependencias no pueden contener valores repetidos")
+            raise ValueError("dependencies cannot contain duplicate values")
         return v
 
 

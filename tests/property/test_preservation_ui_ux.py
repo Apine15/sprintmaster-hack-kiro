@@ -81,7 +81,7 @@ class TestValidTicketsNoWarnings:
         captured = capsys.readouterr()
         assert len(tickets) == 2
         # No warning text in stderr
-        assert "Advertencia" not in captured.err
+        assert "Warning" not in captured.err
         assert "Warning" not in captured.err
 
     @given(st.text(min_size=1, max_size=100))
@@ -99,7 +99,7 @@ class TestValidTicketsNoWarnings:
             try:
                 tickets = formatter.parse_and_validate(raw)
                 stderr_output = captured_stderr.getvalue()
-                assert "Advertencia" not in stderr_output
+                assert "Warning" not in stderr_output
             except SystemExit:
                 # If the ticket is somehow invalid, that's fine - just skip
                 pass

@@ -355,4 +355,4 @@ class TestInvalidDependenciesCauseTicketOmission:
 
         # A warning should be emitted to stderr
         warning_output = stderr_capture.getvalue()
-        assert "Advertencia" in warning_output or "inválido" in warning_output
+        assert "Warning" in warning_output or "invalid" in warning_output

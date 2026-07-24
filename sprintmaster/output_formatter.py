@@ -48,7 +48,7 @@ class OutputFormatter:
         # Validate that raw contains a 'tickets' key with a list
         if not isinstance(raw, dict) or "tickets" not in raw:
             print(
-                "Error: la respuesta del modelo fue malformada (falta clave 'tickets').",
+                "Error: model response was malformed (missing 'tickets' key).",
                 file=sys.stderr,
             )
             sys.exit(EXIT_SERVICE_ERROR)
@@ -56,7 +56,7 @@ class OutputFormatter:
         raw_tickets = raw["tickets"]
         if not isinstance(raw_tickets, list):
             print(
-                "Error: la respuesta del modelo fue malformada ('tickets' no es una lista).",
+                "Error: model response was malformed ('tickets' is not a list).",
                 file=sys.stderr,
             )
             sys.exit(EXIT_SERVICE_ERROR)
@@ -66,10 +66,10 @@ class OutputFormatter:
         for i, ticket_data in enumerate(raw_tickets):
             if not isinstance(ticket_data, dict):
                 if self._logger:
-                    self._logger.warning(f"ticket #{i + 1} no es un objeto válido, omitido.")
+                    self._logger.warning(f"ticket #{i + 1} is not a valid object, skipped.")
                 else:
                     print(
-                        f"Advertencia: ticket #{i + 1} no es un objeto válido, omitido.",
+                        f"Warning: ticket #{i + 1} is not a valid object, skipped.",
                         file=sys.stderr,
                     )
                 continue
@@ -80,16 +80,16 @@ class OutputFormatter:
             except ValidationError as e:
                 title = ticket_data.get("title", f"#{i + 1}")
                 if self._logger:
-                    self._logger.warning(f"ticket '{title}' es inválido y fue omitido: {e}")
+                    self._logger.warning(f"ticket '{title}' is invalid and was skipped: {e}")
                 else:
                     print(
-                        f"Advertencia: ticket '{title}' es inválido y fue omitido: {e}",
+                        f"Warning: ticket '{title}' is invalid and was skipped: {e}",
                         file=sys.stderr,
                     )
 
         if not valid_tickets:
             print(
-                "Error: todos los tickets de la respuesta son inválidos.",
+                "Error: all tickets in the response are invalid.",
                 file=sys.stderr,
             )
             sys.exit(EXIT_SERVICE_ERROR)

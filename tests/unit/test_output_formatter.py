@@ -72,7 +72,7 @@ class TestParseAndValidate:
         tickets = formatter.parse_and_validate(raw)
         assert len(tickets) == 1
         captured = capsys.readouterr()
-        assert "Advertencia" in captured.err
+        assert "Warning" in captured.err
 
     def test_missing_field_emits_warning(self, formatter, capsys):
         """Requirement 5.4: ticket with missing required field is omitted."""
@@ -82,7 +82,7 @@ class TestParseAndValidate:
         tickets = formatter.parse_and_validate(raw)
         assert len(tickets) == 1
         captured = capsys.readouterr()
-        assert "Advertencia" in captured.err
+        assert "Warning" in captured.err
 
     def test_all_tickets_invalid_exits_with_service_error(self, formatter):
         """When all tickets are invalid, exits with EXIT_SERVICE_ERROR."""
@@ -115,7 +115,7 @@ class TestParseAndValidate:
         tickets = formatter.parse_and_validate(raw)
         assert len(tickets) == 1
         captured = capsys.readouterr()
-        assert "Advertencia" in captured.err
+        assert "Warning" in captured.err
 
     def test_invalid_priority_skipped(self, formatter, capsys):
         """Requirement 5.6: invalid priority value is skipped."""
@@ -126,7 +126,7 @@ class TestParseAndValidate:
         tickets = formatter.parse_and_validate(raw)
         assert len(tickets) == 1
         captured = capsys.readouterr()
-        assert "Advertencia" in captured.err
+        assert "Warning" in captured.err
 
     def test_empty_assignee_skipped(self, formatter, capsys):
         """Requirement 5.7: whitespace-only assignee is skipped."""
@@ -137,7 +137,7 @@ class TestParseAndValidate:
         tickets = formatter.parse_and_validate(raw)
         assert len(tickets) == 1
         captured = capsys.readouterr()
-        assert "Advertencia" in captured.err
+        assert "Warning" in captured.err
 
 
 class TestWrite:

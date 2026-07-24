@@ -17,6 +17,10 @@ Each ticket object MUST contain exactly these fields:
 - "story_points": An integer from the Fibonacci sequence: 1, 2, 3, 5, 8, or 13
 - "priority": One of exactly these values: "high", "medium", or "low"
 - "assignee": The name of the assigned team member, or "unassigned" if no team is provided
+- "dependencies": A list of exact titles of other tickets in this response that MUST be completed
+  before this ticket can start. If a ticket has no blockers, use an empty list [].
+  A ticket B blocks ticket A when A cannot begin until B is finished.
+  Never include the ticket's own title in its dependencies list.
 
 Rules for story_points:
 - Use ONLY values from the Fibonacci sequence: 1, 2, 3, 5, 8, 13
@@ -36,7 +40,7 @@ Rules for assignee:
 - If team information is provided, assign each ticket to the team member whose role and tech stack is most suitable for the task
 
 Example response format:
-{"tickets": [{"title": "Implement user login endpoint", "description": "Create a REST API endpoint for user authentication...", "acceptance_criteria": ["User can log in with email and password", "Returns JWT token on success", "Returns 401 on invalid credentials"], "story_points": 5, "priority": "high", "assignee": "unassigned"}]}"""
+{"tickets": [{"title": "Set up database schema", "description": "Create the initial database schema for user management...", "acceptance_criteria": ["Tables exist", "Migrations run successfully"], "story_points": 5, "priority": "high", "assignee": "unassigned", "dependencies": []}, {"title": "Implement user login endpoint", "description": "Create a REST API endpoint for user authentication...", "acceptance_criteria": ["User can log in with email and password", "Returns JWT token on success", "Returns 401 on invalid credentials"], "story_points": 5, "priority": "high", "assignee": "unassigned", "dependencies": ["Set up database schema"]}]}"""
 
 
 NO_TEAM_SUFFIX = """

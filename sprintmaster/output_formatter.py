@@ -17,7 +17,7 @@ from rich.text import Text
 
 from .models import EXIT_SERVICE_ERROR, Ticket
 
-TICKET_KEYS = {"title", "description", "acceptance_criteria", "story_points", "priority", "assignee"}
+TICKET_KEYS = {"title", "description", "acceptance_criteria", "story_points", "priority", "assignee", "dependencies"}
 
 
 class OutputFormatter:

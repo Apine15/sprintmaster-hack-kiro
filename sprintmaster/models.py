@@ -6,7 +6,7 @@ and exit code constants.
 
 from enum import Enum
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 # Exit code constants
@@ -35,6 +35,7 @@ class Ticket(BaseModel):
     story_points: int
     priority: Priority
     assignee: str
+    dependencies: list[str] = Field(default_factory=list, max_length=50)
 
     @field_validator("story_points")
     @classmethod
@@ -48,6 +49,18 @@ class Ticket(BaseModel):
     def must_be_non_empty(cls, v: str) -> str:
         if not v.strip():
             raise ValueError("assignee no puede ser una cadena vacía")
+        return v
+
+    @field_validator("dependencies")
+    @classmethod
+    def validate_dependencies(cls, v: list[str]) -> list[str]:
+        for item in v:
+            if not item.strip():
+                raise ValueError("los elementos de dependencias no pueden ser vacíos")
+            if len(item) > 200:
+                raise ValueError(f"el elemento de dependencia excede 200 caracteres: {item[:50]}...")
+        if len(v) != len(set(v)):
+            raise ValueError("las dependencias no pueden contener valores repetidos")
         return v
 
 

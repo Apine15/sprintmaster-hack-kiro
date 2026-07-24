@@ -47,6 +47,13 @@ NO_TEAM_SUFFIX = """
 
 IMPORTANT: No team configuration has been provided. You MUST set the "assignee" field to "unassigned" for every ticket."""
 
+LANGUAGE_INSTRUCTION_TEMPLATE = (
+    "\n\nLANGUAGE INSTRUCTION:\n"
+    "You MUST write ALL ticket content in {language}. "
+    "This includes the title, description, and acceptance_criteria fields. "
+    "Only the JSON keys must remain in English."
+)
+
 
 def build_team_context_section(team_config: dict) -> str:
     """Build the team context section to append to the system prompt.
@@ -84,7 +91,9 @@ def build_team_context_section(team_config: dict) -> str:
 
 
 def build_messages(
-    feature_description: str, team_config: dict | None
+    feature_description: str,
+    team_config: dict | None,
+    language: str | None = None,
 ) -> tuple[str, list]:
     """Build the system prompt and messages for the Bedrock Converse API.
 
@@ -92,6 +101,9 @@ def build_messages(
         feature_description: The user's feature description text.
         team_config: Optional dictionary with team member information.
                      Expected format: {"team": [{"name": str, "role": str, "stack": [str]}]}
+        language: Optional language name for content generation. When provided
+                  and non-empty, a language instruction is appended to the system
+                  prompt directing the LLM to write ticket content in that language.
 
     Returns:
         A tuple of (system_prompt, messages) where:
@@ -104,6 +116,9 @@ def build_messages(
         system_prompt += build_team_context_section(team_config)
     else:
         system_prompt += NO_TEAM_SUFFIX
+
+    if language and language.strip():
+        system_prompt += LANGUAGE_INSTRUCTION_TEMPLATE.format(language=language)
 
     messages = [{"role": "user", "content": [{"text": feature_description}]}]
 

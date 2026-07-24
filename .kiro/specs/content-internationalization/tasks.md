@@ -41,7 +41,7 @@ Add a `--lang` / `-l` CLI argument that propagates a language preference through
     - Add `"language": args.lang` to the payload dictionary
     - _Requirements: 1.3, 1.5, 1.6_
 
-  - [ ]* 2.3 Write property tests for CLI language argument
+  - [x] 2.3 Write property tests for CLI language argument
     - **Property 1: CLI language propagation**
     - **Property 2: CLI non-interference**
     - **Property 3: CLI whitespace rejection**
@@ -50,7 +50,7 @@ Add a `--lang` / `-l` CLI argument that propagates a language preference through
     - Use Hypothesis strategies to generate valid/invalid language strings
     - **Validates: Requirements 1.3, 1.4, 1.5, 1.6**
 
-  - [ ]* 2.4 Write unit tests for CLI language argument
+  - [x] 2.4 Write unit tests for CLI language argument
     - Add tests in `tests/unit/test_cli_lang.py`
     - Test `--lang` and `-l` are accepted by parser
     - Test default is "English" when omitted
@@ -62,15 +62,15 @@ Add a `--lang` / `-l` CLI argument that propagates a language preference through
 - [x] 3. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Implement prompt builder language injection
-  - [ ] 4.1 Add `LANGUAGE_INSTRUCTION_TEMPLATE` and update `build_messages()` in `lambda/prompt_builder.py`
+- [x] 4. Implement prompt builder language injection
+  - [x] 4.1 Add `LANGUAGE_INSTRUCTION_TEMPLATE` and update `build_messages()` in `lambda/prompt_builder.py`
     - Add the `LANGUAGE_INSTRUCTION_TEMPLATE` constant with placeholders for language name and explicit mention of title, description, and acceptance_criteria fields
     - Add optional `language: str | None = None` parameter to `build_messages()`
     - If `language` is not None and not empty after strip, append the formatted instruction at the end of the system prompt
     - Ensure the instruction is appended after team context or no-team suffix
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-  - [ ]* 4.2 Write property tests for prompt builder language injection
+  - [x] 4.2 Write property tests for prompt builder language injection
     - **Property 8: Prompt builder appends correct Language_Instruction**
     - **Property 9: Prompt builder only appends, never modifies**
     - Create `tests/property/test_language_prompt.py`
@@ -78,7 +78,7 @@ Add a `--lang` / `-l` CLI argument that propagates a language preference through
     - Verify system prompt with language is a strict prefix extension of the prompt without language
     - **Validates: Requirements 3.1, 3.2, 3.6, 4.4, 4.5**
 
-  - [ ]* 4.3 Write unit tests for prompt builder language injection
+  - [x] 4.3 Write unit tests for prompt builder language injection
     - Add tests in `tests/unit/test_prompt_builder_language.py`
     - Test `language=None` → no instruction in prompt
     - Test `language=""` → no instruction in prompt
@@ -87,21 +87,21 @@ Add a `--lang` / `-l` CLI argument that propagates a language preference through
     - Test instruction does not modify existing prompt sections
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
-- [ ] 5. Wire language through the Lambda handler
-  - [ ] 5.1 Update `lambda_handler()` in `lambda/handler.py` to extract and pass language
+- [x] 5. Wire language through the Lambda handler
+  - [x] 5.1 Update `lambda_handler()` in `lambda/handler.py` to extract and pass language
     - Extract `language` from the event body using `body.get("language")`
     - Pass `language=language` to `build_messages()` call
     - Ensure backward compatibility: if `language` key is absent, `None` is passed
     - _Requirements: 4.1, 4.2, 4.4, 4.5_
 
-  - [ ]* 5.2 Write integration tests for end-to-end language propagation
+  - [x] 5.2 Write integration tests for end-to-end language propagation
     - Add tests in `tests/integration/test_language_propagation.py`
     - Test full flow: `--lang Spanish` → payload contains `"language": "Spanish"` → prompt contains language instruction with "Spanish"
     - Test full flow: no `--lang` → "English" in payload → prompt contains English instruction
     - Test full flow: empty `--lang` → CLI exits with code 1
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 6. Final checkpoint - Ensure all tests pass
+- [x] 6. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

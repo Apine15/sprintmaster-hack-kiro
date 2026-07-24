@@ -40,9 +40,10 @@ def lambda_handler(event: dict, context) -> dict:
 
     team_config = body.get("team_config")
     model_id = body.get("model_id", DEFAULT_MODEL_ID)
+    language = body.get("language")
 
     try:
-        system_prompt, messages = build_messages(feature_description, team_config)
+        system_prompt, messages = build_messages(feature_description, team_config, language=language)
     except Exception as exc:
         return _error_response(500, f"Error building prompt: {exc}")
 

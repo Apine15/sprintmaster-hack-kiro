@@ -50,11 +50,11 @@ Add a `dependencies` field to the SprintMaster Ticket model to express blocking 
     - No other changes needed: `_humanize_key` already handles single-word keys ("dependencies" → "Dependencies"), `_render_yaml_highlighted` already applies bold cyan to any key in `TICKET_KEYS`, and `model_dump(mode="json")` already includes all fields
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
-- [ ] 4. Checkpoint - Ensure core implementation is correct
+- [x] 4. Checkpoint - Ensure core implementation is correct
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 5. Write unit tests for the dependencies feature
-  - [-] 5.1 Create unit test file `tests/unit/test_ticket_dependencies.py`
+  - [x] 5.1 Create unit test file `tests/unit/test_ticket_dependencies.py`
     - Add `test_ticket_dependencies_default_empty`: create Ticket without `dependencies` arg, assert `ticket.dependencies == []`
     - Add `test_ticket_with_valid_dependencies`: create Ticket with `dependencies=["Task A", "Task B"]`, assert no error
     - Add `test_ticket_rejects_whitespace_dependency`: create Ticket with `dependencies=["  "]`, assert `ValidationError`
@@ -65,28 +65,28 @@ Add a `dependencies` field to the SprintMaster Ticket model to express blocking 
     - Add `test_json_serialization_with_dependencies`: create Ticket with 2+ dependencies, serialize to JSON via `OutputFormatter.write`, parse back with `json.loads`, assert `dependencies` key is a list matching input
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-  - [ ]* 5.2 Write property test: YAML round-trip preserves dependencies
+  - [x] 5.2 Write property test: YAML round-trip preserves dependencies
     - Add to `tests/property/test_ticket_dependencies.py`
     - **Property 4: YAML serialization round-trip preserves dependencies**
     - Generate valid Tickets with 0-10 dependency strings (1-100 chars each), serialize to YAML, deserialize, assert `dependencies` list is identical in content and order
     - Use `@settings(max_examples=100)`
     - **Validates: Requirements 5.2, 3.3, 3.5**
 
-  - [ ]* 5.3 Write property test: JSON round-trip preserves dependencies
+  - [x] 5.3 Write property test: JSON round-trip preserves dependencies
     - Add to `tests/property/test_ticket_dependencies.py`
     - **Property 5: JSON serialization round-trip preserves dependencies**
     - Generate valid Tickets with 0-10 dependency strings (1-100 chars each), serialize to JSON, deserialize, assert `dependencies` list is identical in content and order
     - Use `@settings(max_examples=100)`
     - **Validates: Requirements 5.3, 3.3, 3.5**
 
-  - [ ]* 5.4 Write property test: invalid dependencies cause ticket omission
+  - [x] 5.4 Write property test: invalid dependencies cause ticket omission
     - Add to `tests/property/test_ticket_dependencies.py`
     - **Property 6: Invalid dependencies cause ticket omission**
     - Generate ticket dicts with invalid `dependencies` (whitespace-only or duplicates), pass through `OutputFormatter.parse_and_validate` with a second valid ticket, assert the invalid ticket is omitted and a warning is emitted
     - Use `@settings(max_examples=100)`
     - **Validates: Requirements 5.4**
 
-- [ ] 6. Final checkpoint - Ensure all tests pass
+- [-] 6. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

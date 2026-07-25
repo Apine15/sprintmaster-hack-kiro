@@ -42,7 +42,7 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Return populated `ScanResult`
     - _Requirements: 2.5, 6.1, 6.2, 6.3_
 
-- [ ] 2. Checkpoint - Verify tree_scanner module
+- [x] 2. Checkpoint - Verify tree_scanner module
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 3. Extend CLI with `--codebase` and `--codebase-depth` arguments
@@ -77,7 +77,7 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - When not provided, leave user message unchanged
     - _Requirements: 8.2, 8.3, 8.4_
 
-- [ ] 5. Checkpoint - Verify end-to-end integration
+- [x] 5. Checkpoint - Verify end-to-end integration
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 6. Write property-based tests for tree_scanner
@@ -132,29 +132,29 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Generate large trees that exceed 10,000 chars, verify truncation at line boundary with indicator
     - **Validates: Requirements 6.1, 6.2, 6.3**
 
-- [ ] 7. Write property-based tests for payload and prompt integration
-  - [ ]* 7.1 Write property test for payload passthrough
+- [x] 7. Write property-based tests for payload and prompt integration
+  - [x] 7.1 Write property test for payload passthrough
     - **Property 11: Payload passthrough**
     - Verify tree string arrives unmodified in `codebase_context` field
     - **Validates: Requirements 7.1, 7.2**
 
-  - [ ]* 7.2 Write property test for prompt formatting
+  - [x] 7.2 Write property test for prompt formatting
     - **Property 12: Prompt formatting**
     - Verify `PROJECT STRUCTURE:` header and code block wrapping in user message
     - **Validates: Requirements 8.2, 8.3**
 
-  - [ ]* 7.3 Write property test for invalid path rejection
+  - [x] 7.3 Write property test for invalid path rejection
     - **Property 13: Invalid path rejection**
     - Generate non-existent or non-directory paths, verify exit code 1 and stderr output
     - **Validates: Requirements 1.3, 1.4**
 
-  - [ ]* 7.4 Write property test for invalid depth rejection
+  - [x] 7.4 Write property test for invalid depth rejection
     - **Property 14: Invalid depth rejection**
     - Generate integers < 1, verify exit code 1 and stderr output
     - **Validates: Requirements 5.4**
 
 - [x] 8. Write unit tests for edge cases
-  - [ ]* 8.1 Write unit tests for CLI argument parsing and validation
+  - [x] 8.1 Write unit tests for CLI argument parsing and validation
     - Test `--codebase` accepted with valid path
     - Test missing `--codebase` → no codebase_context in payload
     - Test path is a file → exit code 1
@@ -168,13 +168,13 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Test permission denied directory is skipped
     - _Requirements: 2.6, 4.3, 4.6_
 
-  - [ ]* 8.3 Write unit tests for Lambda handler and prompt builder integration
+  - [x] 8.3 Write unit tests for Lambda handler and prompt builder integration
     - Test handler passes codebase_context to build_messages
     - Test build_messages without codebase_context → message unchanged
     - Test truncation with verbose mode logs warning
     - _Requirements: 8.1, 8.4, 6.4_
 
-- [ ] 9. Final checkpoint - Ensure all tests pass
+- [x] 9. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

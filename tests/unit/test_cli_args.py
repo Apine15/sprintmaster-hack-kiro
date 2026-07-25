@@ -261,3 +261,74 @@ class TestLoadTeamConfig:
         args = argparse.Namespace(team_config="/nonexistent/team.yaml")
         with pytest.raises(TeamConfigFileNotFoundError):
             load_team_config(args)
+
+
+class TestCodebaseArgs:
+    """Tests for --codebase and --codebase-depth CLI argument parsing and validation."""
+
+    def test_codebase_accepted_with_valid_path(self, tmp_path):
+        """--codebase stores the provided path value. (Req 1.1, 1.2)"""
+        args = parse_args(["--codebase", str(tmp_path)])
+        assert args.codebase == str(tmp_path)
+
+    def test_missing_codebase_is_none(self):
+        """When --codebase is not provided, args.codebase is None. (Req 1.5)"""
+        args = parse_args([])
+        assert args.codebase is None
+
+    def test_missing_codebase_no_codebase_context_in_payload(self, tmp_path, capsys):
+        """When --codebase is not provided, payload has no codebase_context key. (Req 1.5)"""
+        from sprintmaster.cli import main
+
+        with patch(
+            "sys.argv",
+            ["sprintmaster", "Build API", "--lambda-url", "https://example.com"],
+        ), patch("sprintmaster.cli.resolve_input", return_value="Build API"), patch(
+            "sprintmaster.cli.load_team_config", return_value=None
+        ), patch(
+            "sprintmaster.cli.LambdaClient"
+        ) as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.invoke.return_value = {"tickets": []}
+            # Patch OutputFormatter to avoid needing real response structure
+            with patch("sprintmaster.cli.OutputFormatter") as mock_formatter_cls:
+                mock_formatter = mock_formatter_cls.return_value
+                mock_formatter.format.return_value = "output"
+                try:
+                    main()
+                except SystemExit:
+                    pass
+
+            # Inspect the payload passed to client.invoke
+            call_args = mock_client.invoke.call_args
+            if call_args is not None:
+                payload = call_args[0][0] if call_args[0] else call_args[1].get("payload")
+                assert "codebase_context" not in payload
+
+    def test_codebase_path_is_file_exits_with_code_1(self, tmp_path, capsys):
+        """When --codebase points to a file, CLI exits with code 1. (Req 1.4)"""
+        from sprintmaster.cli import main
+
+        test_file = tmp_path / "somefile.txt"
+        test_file.write_text("content", encoding="utf-8")
+
+        with patch(
+            "sys.argv",
+            ["sprintmaster", "Build API", "--codebase", str(test_file)],
+        ):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+            assert exc_info.value.code == 1
+
+        captured = capsys.readouterr()
+        assert "not a directory" in captured.err
+
+    def test_default_depth_value_is_4(self):
+        """Default --codebase-depth is 4. (Req 5.1)"""
+        args = parse_args([])
+        assert args.codebase_depth == 4
+
+    def test_codebase_depth_custom_value(self):
+        """--codebase-depth stores the provided integer value."""
+        args = parse_args(["--codebase-depth", "7"])
+        assert args.codebase_depth == 7

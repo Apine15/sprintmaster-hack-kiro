@@ -48,9 +48,10 @@ NO_TEAM_SUFFIX = """
 IMPORTANT: No team configuration has been provided. You MUST set the "assignee" field to "unassigned" for every ticket."""
 
 LANGUAGE_INSTRUCTION_TEMPLATE = (
-    "\n\nLANGUAGE INSTRUCTION:\n"
-    "You MUST write ALL ticket content in {language}. "
-    "This includes the title, description, and acceptance_criteria fields. "
+    "\n\nCRITICAL — LANGUAGE INSTRUCTION:\n"
+    "Regardless of the language used in the user's input, "
+    "you MUST write ALL ticket content (title, description, acceptance_criteria) in {language}. "
+    "Do NOT follow the language of the input — always output in {language}. "
     "Only the JSON keys must remain in English."
 )
 
@@ -120,6 +121,14 @@ def build_messages(
     if language and language.strip():
         system_prompt += LANGUAGE_INSTRUCTION_TEMPLATE.format(language=language)
 
-    messages = [{"role": "user", "content": [{"text": feature_description}]}]
+    # Build user message with language reminder at the end.
+    # Models prioritize instructions closer to the end of the user message,
+    # so repeating the language constraint here ensures compliance even when
+    # the feature description is written in a different language.
+    user_text = feature_description
+    if language and language.strip():
+        user_text += f"\n\n[IMPORTANT: Write all ticket content in {language}.]"
+
+    messages = [{"role": "user", "content": [{"text": user_text}]}]
 
     return system_prompt, messages

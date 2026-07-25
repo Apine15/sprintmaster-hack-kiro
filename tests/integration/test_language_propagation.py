@@ -156,10 +156,12 @@ class TestPayloadToPromptPropagation:
         assert response["statusCode"] == 200
 
         # Verify the user message still contains the original feature description
+        # and appends the language reminder at the end
         call_args = mock_client.converse.call_args
         messages = call_args.kwargs["messages"]
         user_message_text = messages[0]["content"][0]["text"]
-        assert user_message_text == feature_text
+        assert user_message_text.startswith(feature_text)
+        assert "[IMPORTANT: Write all ticket content in French.]" in user_message_text
 
     @patch("handler.boto3.client")
     def test_language_does_not_alter_team_config_processing(self, mock_boto_client):

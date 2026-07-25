@@ -1,0 +1,10 @@
+Project Context: GymProject. PWA application with monorepo architecture for gym administrative management and physical training tracking.
+
+Feature to implement: Personalized Routine Assignment Module.
+
+Description and Requirements:
+We need to build the core module where gym administrators assign routines to athletes. The work includes:
+1. Database modeling to store the exercise catalog, sets, and repetitions.
+2. Development of REST API endpoints for routine CRUD operations.
+3. Layout and implementation of the PWA interface so athletes can view their daily routine and mark exercises as completed.
+4. Docker environment configuration and deployment pipeline updates to support this new module.

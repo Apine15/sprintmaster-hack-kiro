@@ -1,4 +1,4 @@
-Contexto del Proyecto: GymBro. Aplicación PWA con arquitectura monorepo para gestión administrativa de gimnasios y seguimiento de entrenamiento físico.
+Contexto del Proyecto: GymProject. Aplicación PWA con arquitectura monorepo para gestión administrativa de gimnasios y seguimiento de entrenamiento físico.
 
 Funcionalidad a implementar: Módulo de Asignación de Rutinas Personalizadas.
 

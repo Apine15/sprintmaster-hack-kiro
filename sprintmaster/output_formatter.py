@@ -155,6 +155,7 @@ class OutputFormatter:
                     default_flow_style=False,
                     allow_unicode=True,
                     sort_keys=False,
+                    width=float("inf"),
                 ).rstrip("\n")
             blocks.append(block)
 
@@ -214,6 +215,7 @@ class OutputFormatter:
                     default_flow_style=False,
                     allow_unicode=True,
                     sort_keys=False,
+                    width=float("inf"),
                 )
 
                 lines = ticket_yaml.rstrip("\n").split("\n")
@@ -249,5 +251,6 @@ class OutputFormatter:
                 default_flow_style=False,
                 allow_unicode=True,
                 sort_keys=False,
+                width=float("inf"),
             )
             sys.stdout.write(content)

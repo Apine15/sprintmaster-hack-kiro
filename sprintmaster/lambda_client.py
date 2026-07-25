@@ -34,8 +34,8 @@ class LambdaClient:
         )
         if not url:
             print(
-                "Error: la URL del backend no está configurada. "
-                "Defina SPRINTMASTER_LAMBDA_URL o use --lambda-url.",
+                "Error: backend URL is not configured. "
+                "Define SPRINTMASTER_LAMBDA_URL or use --lambda-url.",
                 file=sys.stderr,
             )
             sys.exit(EXIT_SERVICE_ERROR)
@@ -64,13 +64,13 @@ class LambdaClient:
                 )
             except requests.exceptions.Timeout:
                 print(
-                    "Error: tiempo de espera agotado al contactar el backend (30s).",
+                    "Error: timeout while contacting the backend (30s).",
                     file=sys.stderr,
                 )
                 sys.exit(EXIT_SERVICE_ERROR)
             except requests.exceptions.RequestException as e:
                 print(
-                    f"Error: no se pudo conectar al backend: {e}",
+                    f"Error: could not connect to the backend: {e}",
                     file=sys.stderr,
                 )
                 sys.exit(EXIT_SERVICE_ERROR)
@@ -81,7 +81,7 @@ class LambdaClient:
                     return response.json()
                 except ValueError:
                     print(
-                        "Error: la respuesta del backend no es JSON válido.",
+                        "Error: backend response is not valid JSON.",
                         file=sys.stderr,
                     )
                     sys.exit(EXIT_SERVICE_ERROR)
@@ -91,8 +91,8 @@ class LambdaClient:
                 attempt += 1
                 if attempt >= max_attempts:
                     print(
-                        "Error: máximo de reintentos agotado (HTTP 429). "
-                        "El backend está sobrecargado.",
+                        "Error: max retries exhausted (HTTP 429). "
+                        "The backend is overloaded.",
                         file=sys.stderr,
                     )
                     sys.exit(EXIT_SERVICE_ERROR)
@@ -103,8 +103,8 @@ class LambdaClient:
             # Handle 401/403
             if response.status_code in (401, 403):
                 print(
-                    "Error: la solicitud al backend fue rechazada por falta "
-                    "de autorización (HTTP {}).".format(response.status_code),
+                    "Error: backend request rejected due to lack of "
+                    "authorization (HTTP {}).".format(response.status_code),
                     file=sys.stderr,
                 )
                 sys.exit(EXIT_SERVICE_ERROR)
@@ -112,7 +112,7 @@ class LambdaClient:
             # Handle 5xx
             if response.status_code >= 500:
                 print(
-                    "Error: error interno del backend (HTTP {}).".format(
+                    "Error: internal backend error (HTTP {}).".format(
                         response.status_code
                     ),
                     file=sys.stderr,
@@ -121,7 +121,7 @@ class LambdaClient:
 
             # Handle other unexpected status codes
             print(
-                "Error: respuesta inesperada del backend (HTTP {}).".format(
+                "Error: unexpected backend response (HTTP {}).".format(
                     response.status_code
                 ),
                 file=sys.stderr,
@@ -130,7 +130,7 @@ class LambdaClient:
 
         # Should not reach here, but safety net
         print(
-            "Error: máximo de reintentos agotado.",
+            "Error: max retries exhausted.",
             file=sys.stderr,
         )
         sys.exit(EXIT_SERVICE_ERROR)

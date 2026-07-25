@@ -6,15 +6,15 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
 
 ## Tasks
 
-- [ ] 1. Create tree_scanner module with core data model and ignore patterns
-  - [ ] 1.1 Create `sprintmaster/tree_scanner.py` with `ScanResult` dataclass, default ignore constants, and `_build_default_spec()` helper
+- [x] 1. Create tree_scanner module with core data model and ignore patterns
+  - [x] 1.1 Create `sprintmaster/tree_scanner.py` with `ScanResult` dataclass, default ignore constants, and `_build_default_spec()` helper
     - Define `ScanResult` dataclass with fields: `tree`, `total_entries`, `truncated`, `truncated_count`
     - Define `DEFAULT_IGNORE_DIRS` and `DEFAULT_IGNORE_FILES` constants
     - Implement `_build_default_spec()` using `pathspec.PathSpec.from_lines("gitwildmatch", ...)`
     - Add `pathspec` to project dependencies in `pyproject.toml`
     - _Requirements: 3.1, 3.2_
 
-  - [ ] 1.2 Implement `_load_gitignore(root)` helper in `tree_scanner.py`
+  - [x] 1.2 Implement `_load_gitignore(root)` helper in `tree_scanner.py`
     - Read root-level `.gitignore` file if it exists
     - Parse with `pathspec.PathSpec.from_lines("gitwildmatch", ...)`
     - Skip comment lines (starting with `#`) and empty lines
@@ -22,7 +22,7 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Handle permission errors gracefully (log warning, return None)
     - _Requirements: 4.1, 4.2, 4.3, 4.5, 4.6_
 
-  - [ ] 1.3 Implement `_walk()` recursive traversal function in `tree_scanner.py`
+  - [x] 1.3 Implement `_walk()` recursive traversal function in `tree_scanner.py`
     - Accept directory, root, current depth, depth_limit, combined ignore_spec, prefix, lines list, and visited set
     - List directory entries, sort directories first then files, both alphabetically
     - Skip entries matching the combined ignore spec (default + gitignore)
@@ -33,7 +33,7 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Return count of entries added
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.6, 3.3, 5.2, 5.3_
 
-  - [ ] 1.4 Implement public `scan()` function in `tree_scanner.py`
+  - [x] 1.4 Implement public `scan()` function in `tree_scanner.py`
     - Combine default patterns with gitignore patterns using `_load_gitignore` and `_build_default_spec`
     - Include root directory name as first line
     - Call `_walk()` to build tree lines

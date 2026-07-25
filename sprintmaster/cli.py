@@ -14,6 +14,7 @@ import yaml
 from pydantic import ValidationError
 from rich_argparse import RawDescriptionRichHelpFormatter
 
+from sprintmaster import tree_scanner
 from sprintmaster.lambda_client import LambdaClient
 from sprintmaster.logger import Logger
 from sprintmaster.models import EXIT_SUCCESS, EXIT_USER_ERROR, TeamConfig
@@ -142,6 +143,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Language for generated ticket content (default: English)",
     )
     parser.add_argument(
+        "--codebase",
+        metavar="PATH",
+        default=None,
+        help="Path to project directory to scan for context",
+    )
+    parser.add_argument(
+        "--codebase-depth",
+        metavar="N",
+        type=int,
+        default=4,
+        help="Maximum directory depth for tree scan (default: 4)",
+    )
+    parser.add_argument(
         "--verbose",
         action="store_true",
         help="Show detailed progress and response metadata",
@@ -261,6 +275,20 @@ def main() -> None:
     logger = Logger(verbose=args.verbose, quiet=args.quiet)
     logger.banner()
 
+    # Validate --codebase arguments
+    codebase_path = None
+    if args.codebase is not None:
+        codebase_path = Path(args.codebase).resolve()
+        if not codebase_path.exists():
+            print(f"Error: codebase path does not exist: {codebase_path}", file=sys.stderr)
+            sys.exit(EXIT_USER_ERROR)
+        if not codebase_path.is_dir():
+            print(f"Error: codebase path is not a directory: {codebase_path}", file=sys.stderr)
+            sys.exit(EXIT_USER_ERROR)
+    if args.codebase_depth < 1:
+        print("Error: --codebase-depth must be at least 1", file=sys.stderr)
+        sys.exit(EXIT_USER_ERROR)
+
     # Validate --lang argument
     args.lang = args.lang.strip()
     if not args.lang:
@@ -293,6 +321,14 @@ def main() -> None:
         print(str(e), file=sys.stderr)
         sys.exit(EXIT_USER_ERROR)
 
+    # Scan codebase if requested
+    codebase_context = None
+    if codebase_path is not None:
+        result = tree_scanner.scan(codebase_path, depth_limit=args.codebase_depth)
+        if result.truncated and args.verbose:
+            logger.verbose(f"Tree output truncated: {result.truncated_count} entries not shown")
+        codebase_context = result.tree
+
     # Build request payload
     payload = {
         "feature_description": feature_description,
@@ -300,6 +336,8 @@ def main() -> None:
         "model_id": args.model,
         "language": args.lang,
     }
+    if codebase_context is not None:
+        payload["codebase_context"] = codebase_context
 
     # Send request to Lambda backend
     logger.start_progress("Generating tickets...")

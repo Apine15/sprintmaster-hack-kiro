@@ -55,6 +55,14 @@ LANGUAGE_INSTRUCTION_TEMPLATE = (
     "Only the JSON keys must remain in English."
 )
 
+CODEBASE_CONTEXT_TEMPLATE = """
+
+PROJECT STRUCTURE:
+```
+{tree}
+```
+"""
+
 
 def build_team_context_section(team_config: dict) -> str:
     """Build the team context section to append to the system prompt.
@@ -95,6 +103,7 @@ def build_messages(
     feature_description: str,
     team_config: dict | None,
     language: str | None = None,
+    codebase_context: str | None = None,
 ) -> tuple[str, list]:
     """Build the system prompt and messages for the Bedrock Converse API.
 
@@ -105,6 +114,9 @@ def build_messages(
         language: Optional language name for content generation. When provided
                   and non-empty, a language instruction is appended to the system
                   prompt directing the LLM to write ticket content in that language.
+        codebase_context: Optional tree representation of the project directory
+                          structure. When provided and non-empty, appended to the
+                          user message as a PROJECT STRUCTURE section.
 
     Returns:
         A tuple of (system_prompt, messages) where:
@@ -121,11 +133,17 @@ def build_messages(
     if language and language.strip():
         system_prompt += LANGUAGE_INSTRUCTION_TEMPLATE.format(language=language)
 
-    # Build user message with language reminder at the end.
+    # Build user message.
+    # Codebase context is appended after the feature description but before
+    # the language reminder so the language instruction remains at the very end.
+    user_text = feature_description
+
+    if codebase_context and codebase_context.strip():
+        user_text += CODEBASE_CONTEXT_TEMPLATE.format(tree=codebase_context)
+
     # Models prioritize instructions closer to the end of the user message,
     # so repeating the language constraint here ensures compliance even when
     # the feature description is written in a different language.
-    user_text = feature_description
     if language and language.strip():
         user_text += f"\n\n[IMPORTANT: Write all ticket content in {language}.]"
 

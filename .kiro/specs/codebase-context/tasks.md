@@ -45,33 +45,33 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
 - [ ] 2. Checkpoint - Verify tree_scanner module
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Extend CLI with `--codebase` and `--codebase-depth` arguments
-  - [ ] 3.1 Add `--codebase` and `--codebase-depth` arguments to `parse_args()` in `sprintmaster/cli.py`
+- [x] 3. Extend CLI with `--codebase` and `--codebase-depth` arguments
+  - [x] 3.1 Add `--codebase` and `--codebase-depth` arguments to `parse_args()` in `sprintmaster/cli.py`
     - Add `--codebase` with `metavar="PATH"`, `default=None`
     - Add `--codebase-depth` with `metavar="N"`, `type=int`, `default=4`
     - _Requirements: 1.1, 5.1_
 
-  - [ ] 3.2 Add validation logic in CLI `main()` for codebase arguments
+  - [x] 3.2 Add validation logic in CLI `main()` for codebase arguments
     - Resolve `--codebase` to absolute path
     - Check path exists — if not, print error to stderr and exit code 1
     - Check path is a directory — if not, print error to stderr and exit code 1
     - Check `--codebase-depth` >= 1 — if not, print error to stderr and exit code 1
     - _Requirements: 1.2, 1.3, 1.4, 5.4_
 
-  - [ ] 3.3 Integrate tree_scanner call and payload injection in CLI `main()`
+  - [x] 3.3 Integrate tree_scanner call and payload injection in CLI `main()`
     - Call `tree_scanner.scan()` when `--codebase` is provided
     - Log truncation warning in verbose mode if result is truncated
     - Add `codebase_context` field to Lambda payload with the tree string
     - Skip codebase_context field when `--codebase` is not provided
     - _Requirements: 1.5, 6.4, 7.1, 7.2, 7.3_
 
-- [ ] 4. Update Lambda handler and prompt builder
-  - [ ] 4.1 Update Lambda handler (`lambda/handler.py`) to extract and pass `codebase_context`
+- [x] 4. Update Lambda handler and prompt builder
+  - [x] 4.1 Update Lambda handler (`lambda/handler.py`) to extract and pass `codebase_context`
     - Extract `codebase_context` from event body (optional field)
     - Pass it to `build_messages()` as keyword argument
     - _Requirements: 8.1_
 
-  - [ ] 4.2 Update prompt builder (`lambda/prompt_builder.py`) to append codebase context section
+  - [x] 4.2 Update prompt builder (`lambda/prompt_builder.py`) to append codebase context section
     - Add `codebase_context: str | None = None` parameter to `build_messages()`
     - When `codebase_context` is provided and non-empty, append `PROJECT STRUCTURE:` header followed by tree in a code block to user message
     - When not provided, leave user message unchanged

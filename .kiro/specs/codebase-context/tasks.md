@@ -80,54 +80,54 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
 - [ ] 5. Checkpoint - Verify end-to-end integration
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Write property-based tests for tree_scanner
-  - [ ]* 6.1 Write property test for completeness (no silent omissions)
+- [x] 6. Write property-based tests for tree_scanner
+  - [x] 6.1 Write property test for completeness (no silent omissions)
     - **Property 1: Completeness — no silent omissions**
     - Use Hypothesis to generate random directory trees with `tmp_path`
     - Verify every non-ignored file/dir within depth limit appears in output
     - **Validates: Requirements 2.1, 9.2**
 
-  - [ ]* 6.2 Write property test for soundness (no fabricated entries)
+  - [x] 6.2 Write property test for soundness (no fabricated entries)
     - **Property 2: Soundness — no fabricated entries**
     - Parse tree output names and verify each corresponds to an actual entry on disk
     - **Validates: Requirements 9.1**
 
-  - [ ]* 6.3 Write property test for sorting invariant
+  - [x] 6.3 Write property test for sorting invariant
     - **Property 3: Sorting invariant**
     - For each directory level, verify directories appear before files and both groups are alphabetically sorted
     - **Validates: Requirements 2.3**
 
-  - [ ]* 6.4 Write property test for root name as first line
+  - [x] 6.4 Write property test for root name as first line
     - **Property 4: Root name as first line**
     - Verify first line of output equals the basename of the scanned root directory
     - **Validates: Requirements 2.5**
 
-  - [ ]* 6.5 Write property test for no file contents leaked
+  - [x] 6.5 Write property test for no file contents leaked
     - **Property 5: No file contents leaked**
     - Generate files with random content, verify none of that content appears in tree output
     - **Validates: Requirements 2.4**
 
-  - [ ]* 6.6 Write property test for default ignore exclusion
+  - [x] 6.6 Write property test for default ignore exclusion
     - **Property 6: Default ignore exclusion**
     - Create entries matching default patterns, verify they don't appear in output
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
-  - [ ]* 6.7 Write property test for gitignore combined exclusion
+  - [x] 6.7 Write property test for gitignore combined exclusion
     - **Property 7: Gitignore combined exclusion**
     - Generate `.gitignore` with random patterns, verify matching entries are excluded alongside defaults
     - **Validates: Requirements 4.1, 4.4**
 
-  - [ ]* 6.8 Write property test for gitignore comment lines
+  - [x] 6.8 Write property test for gitignore comment lines
     - **Property 8: Gitignore comment lines are non-matching**
     - Generate `.gitignore` with comment lines, verify they don't cause any exclusion
     - **Validates: Requirements 4.5**
 
-  - [ ]* 6.9 Write property test for depth limiting
+  - [x] 6.9 Write property test for depth limiting
     - **Property 9: Depth limiting**
     - Generate deep trees, verify no entries beyond depth N appear, and directories at depth N show name only
     - **Validates: Requirements 5.2, 5.3**
 
-  - [ ]* 6.10 Write property test for truncation correctness
+  - [x] 6.10 Write property test for truncation correctness
     - **Property 10: Truncation correctness**
     - Generate large trees that exceed 10,000 chars, verify truncation at line boundary with indicator
     - **Validates: Requirements 6.1, 6.2, 6.3**
@@ -153,7 +153,7 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Generate integers < 1, verify exit code 1 and stderr output
     - **Validates: Requirements 5.4**
 
-- [ ] 8. Write unit tests for edge cases
+- [x] 8. Write unit tests for edge cases
   - [ ]* 8.1 Write unit tests for CLI argument parsing and validation
     - Test `--codebase` accepted with valid path
     - Test missing `--codebase` → no codebase_context in payload
@@ -161,7 +161,7 @@ This plan implements the `--codebase` CLI feature for SprintMaster. The approach
     - Test default depth value is 4
     - _Requirements: 1.1, 1.2, 1.4, 1.5, 5.1_
 
-  - [ ]* 8.2 Write unit tests for tree_scanner edge cases
+  - [x] 8.2 Write unit tests for tree_scanner edge cases
     - Test circular symlink is skipped gracefully
     - Test `.gitignore` not present → defaults only
     - Test empty lines in `.gitignore` don't cause errors

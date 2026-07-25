@@ -1,7 +1,7 @@
 """AWS Lambda handler for SprintMaster.
 
 Receives feature description and team config from the CLI,
-invokes Bedrock Converse API with Claude 3 Haiku,
+invokes Bedrock Converse API with QWEN Coder 30B A3B,
 and returns structured ticket data.
 """
 
@@ -12,7 +12,7 @@ import boto3
 
 from prompt_builder import build_messages
 
-DEFAULT_MODEL_ID = "us.anthropic.claude-3-haiku-20240307-v1:0"
+DEFAULT_MODEL_ID = "qwen.qwen3-coder-30b-a3b-v1:0"
 
 
 def lambda_handler(event: dict, context) -> dict:

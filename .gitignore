@@ -15,3 +15,5 @@ sprintmaster/__pycache__/
 .pytest_cache/
 
 *.egg-info/
+
+.hypothesis

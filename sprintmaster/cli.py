@@ -133,8 +133,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--model",
-        default="us.anthropic.claude-3-haiku-20240307-v1:0",
-        help="Bedrock model ID (default: us.anthropic.claude-3-haiku-20240307-v1:0)",
+        default="qwen.qwen3-coder-30b-a3b-v1:0",
+        help="Bedrock model ID (default: qwen.qwen3-coder-30b-a3b-v1:0)",
     )
     parser.add_argument(
         "--lang", "-l",

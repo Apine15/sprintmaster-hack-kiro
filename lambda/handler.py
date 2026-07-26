@@ -12,7 +12,7 @@ import boto3
 
 from prompt_builder import build_messages
 
-DEFAULT_MODEL_ID = "qwen.qwen3-coder-30b-a3b-v1:0"
+DEFAULT_MODEL_ID ="qwen.qwen3-coder-30b-a3b-v1:0"
 
 
 def lambda_handler(event: dict, context) -> dict:

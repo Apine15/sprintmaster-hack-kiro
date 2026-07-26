@@ -5,7 +5,9 @@
 ![Amazon Bedrock](https://img.shields.io/badge/Amazon-Bedrock-232F3E?logo=amazonaws&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-> Automatización inteligente de tickets ágiles para equipos de alto rendimiento.
+> 🌐 [Leer en Español](README.es.md)
+
+> Intelligent agile ticket automation for high-performance teams.
 
 ```text
   ____             _       _   __  __           _            
@@ -18,24 +20,24 @@
 
 ---
 
-## 📌 Enlaces Importantes (Entregables del Hackathon)
+## 📌 Important Links (Hackathon Deliverables)
 
-| Entregable | Enlace |
+| Deliverable | Link |
 |---|---|
-| 🎥 Video Presentación (Pitch & Demo 5 min) | [Enlace a YouTube/Vimeo] |
-| 💻 Demo Interactiva en Línea | [Enlace a Replit] |
+| 🎥 Pitch & Demo Video (5 min) | [YouTube/Vimeo Link] |
+| 💻 Interactive Online Demo | [Replit Link] |
 
 ---
 
-## 🎯 El Problema y la Solución
+## 🎯 The Problem & The Solution
 
-**El Problema:** Los líderes técnicos y Product Managers invierten una gran cantidad de tiempo traduciendo requisitos de negocio o descripciones de características en tickets de desarrollo estructurados, definiendo criterios de aceptación y asignando tareas según el seniority de su equipo.
+**The Problem:** Tech leads and Product Managers spend a significant amount of time translating business requirements or feature descriptions into structured development tickets, defining acceptance criteria, and assigning tasks based on their team's seniority levels.
 
-**La Solución:** SprintMaster es una herramienta CLI que recibe una descripción en lenguaje natural y la configuración del equipo de desarrollo. Utilizando Inteligencia Artificial (Qwen3 Coder 30B vía Amazon Bedrock), analiza el contexto y genera instantáneamente tickets estructurados — con estimación de Story Points, prioridad y asignación de responsables — listos para integrarse al backlog del proyecto.
+**The Solution:** SprintMaster is a CLI tool that takes a natural-language description and a team configuration. Using AI (Qwen3 Coder 30B via Amazon Bedrock), it analyzes the context and instantly generates structured tickets — with Story Point estimation, priority, and assignee allocation — ready to be added to the project backlog.
 
 ---
 
-## 🏗️ Arquitectura y Componentes Principales
+## 🏗️ Architecture & Main Components
 
 ```
 ┌─────────────────────┐       HTTPS        ┌──────────────────┐       Converse API       ┌─────────────────┐
@@ -48,64 +50,61 @@
   team_config.yaml                          (System prompt + messages)
 ```
 
-| Componente | Descripción |
+| Component | Description |
 |---|---|
-| **Cliente CLI** | Python + Rich. Captura argumentos, parsea archivos locales (`.txt` y `.yaml`), comunica con el backend con backoff exponencial. |
-| **Backend Serverless** | AWS API Gateway + AWS Lambda. Sin servidores que mantener, escala automáticamente. |
-| **Motor de IA** | Modelo Qwen3 Coder 30B A3B invocado vía Amazon Bedrock Converse API. |
-| **Seguridad** | Sin credenciales hardcodeadas. IAM Roles + variables de entorno. |
+| **CLI Client** | Python + Rich. Parses arguments, reads local files (`.txt` and `.yaml`), communicates with the backend using exponential backoff. |
+| **Serverless Backend** | AWS API Gateway + AWS Lambda. No servers to maintain, auto-scales. |
+| **AI Engine** | Qwen3 Coder 30B A3B model invoked via Amazon Bedrock Converse API. |
+| **Security** | No hardcoded credentials. IAM Roles + environment variables. |
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
-| Capa | Tecnologías |
+| Layer | Technologies |
 |---|---|
 | CLI | Python 3.11+, Pydantic, Rich, PyYAML |
 | Backend | AWS Lambda, API Gateway, Amazon Bedrock |
-| IA | Qwen3 Coder 30B A3B (vía Bedrock Converse API) |
+| AI | Qwen3 Coder 30B A3B (via Bedrock Converse API) |
 | Testing | Pytest, Hypothesis (property-based testing), Coverage |
-| Infraestructura | Serverless (AWS), IAM Roles |
+| Infrastructure | Serverless (AWS), IAM Roles |
 
 ---
 
-## ⚡ Demo Rápida
+## ⚡ Quick Demo
 
-<!-- Reemplazar con un GIF real de la CLI en acción -->
-<!-- ![SprintMaster Demo](assets/demo.gif) -->
+**Input:** A natural-language description + team configuration.
 
-**Input:** Una descripción en lenguaje natural + configuración del equipo.
-
-**Output:** Tickets estructurados con título, descripción, criterios de aceptación, story points, prioridad y asignación.
+**Output:** Structured tickets with title, description, acceptance criteria, story points, priority, and assignee.
 
 ```bash
 $ sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml
 
-# Resultado: tickets YAML con syntax highlighting en terminal
+# Result: YAML tickets with syntax highlighting in terminal
 ```
 
 ---
 
-## 🖥️ Instalación Local
+## 🖥️ Local Installation
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/Apine15/sprintmaster-hack-kiro.git
 cd sprintmaster
 
-# Crear entorno virtual
+# Create virtual environment
 python -m venv .venv
 .venv\Scripts\activate        # Windows
 # source .venv/bin/activate   # Linux/Mac
 
-# Instalar la CLI y sus dependencias
+# Install the CLI and its dependencies
 pip install -e .
 
-# Configurar la URL del Lambda (variable de entorno)
-set SPRINTMASTER_LAMBDA_URL=https://tu-api-gateway-url.amazonaws.com/prod
+# Set the Lambda URL (environment variable)
+set SPRINTMASTER_LAMBDA_URL=https://your-api-gateway-url.amazonaws.com/prod
 ```
 
-> 💡 **Para desarrollo y testing:** si deseas ejecutar la suite de tests (pytest + Hypothesis), instala también las dependencias de desarrollo:
+> 💡 **For development and testing:** if you want to run the test suite (pytest + Hypothesis), also install dev dependencies:
 >
 > ```bash
 > pip install -e ".[dev]"
@@ -113,102 +112,132 @@ set SPRINTMASTER_LAMBDA_URL=https://tu-api-gateway-url.amazonaws.com/prod
 
 ---
 
-## 🛠️ Cómo Probar la Demo en Replit
+## 🛠️ How to Try the Demo on Replit
 
-Para facilitar la evaluación, se ha preparado un entorno interactivo en Replit que **no requiere instalaciones locales**.
+An interactive Replit environment is available for easy evaluation — **no local installation required**.
 
-1. Abre el enlace de Replit (ver tabla de entregables arriba).
-2. El entorno ya cuenta con archivos de prueba en inglés y español.
-3. En la consola (Shell), ejecuta:
+1. Open the Replit link (see deliverables table above).
+2. The environment includes sample files in English and Spanish.
+3. In the console (Shell), run:
 
 ```bash
-# Ejemplo principal (input en inglés)
+# Main example (English input)
 sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml
 
-# Forzar salida en español con --lang
+# Force Spanish output with --lang
 sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml --lang Spanish
 ```
 
-4. Observa cómo el backend procesa la solicitud y la CLI imprime los tickets generados con formato enriquecido.
+4. Watch the backend process the request and the CLI print the generated tickets with rich formatting.
 
 ---
 
 ## 🧪 Testing
 
-El proyecto cuenta con una suite de tests robusta que incluye tests unitarios, de integración y **property-based testing** con Hypothesis:
+The project has a robust test suite including unit tests, integration tests, and **property-based testing** with Hypothesis:
 
 ```bash
-# Ejecutar todos los tests
+# Run all tests
 pytest
 
-# Con cobertura
+# With coverage
 pytest --cov=sprintmaster
 
-# Solo tests unitarios
+# Unit tests only
 pytest tests/unit/
 
-# Solo property-based tests
+# Property-based tests only
 pytest tests/property/
 ```
 
 ---
 
-## 📖 Uso Detallado
+## 📖 Detailed Usage
 
 ```bash
-# Descripción como argumento posicional
+# Description as positional argument
 sprintmaster "Implement user authentication with OAuth2"
 
-# Desde archivo (inglés)
+# From file
 sprintmaster --file feature_spec_en.txt
 
-# Con configuración de equipo
+# With team configuration
 sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml
 
-# Forzar salida en español
+# Force Spanish output
 sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml --lang Spanish
 
-# Salida en JSON a archivo
+# JSON output to file
 sprintmaster "Build REST API" --format json --output tickets.json
 
-# Input por pipe
+# Pipe input
 echo "Add shopping cart functionality" | sprintmaster
 
-# Modo verbose (muestra tokens, modelo, región)
+# Verbose mode (shows tokens, model, region)
 sprintmaster --file feature_spec_en.txt --verbose
+
+# With codebase context (scans the project structure)
+sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml --codebase .
+
+# Limit scan depth to 2 levels
+sprintmaster --file feature_spec_en.txt --codebase ./my-project --codebase-depth 2
 ```
 
-### 🌐 Nota sobre el Idioma del Output
+> 💡 **Tip:** Run `sprintmaster --help` to see all available flags and their descriptions.
 
-El repositorio incluye archivos de ejemplo en **dos idiomas**:
+### 🌳 Codebase Context
 
-| Archivo | Idioma |
+The `--codebase <PATH>` flag lets SprintMaster scan your project's file and folder structure (names only, never file contents) and inject it as additional context to the AI model. This allows generated tickets to reference real paths, modules, and architectural patterns from your code.
+
+```bash
+# Example: generate tickets with project structure awareness
+sprintmaster --file feature_spec_en.txt --team-config team_config_en.yaml --codebase .
+```
+
+**Related options:**
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--codebase PATH` | Path to the project directory to scan | _(none)_ |
+| `--codebase-depth N` | Maximum depth of the directory tree | `4` |
+
+**Behavior:**
+- Automatically respects your `.gitignore` (root-level only).
+- Excludes common directories by default: `node_modules`, `.git`, `__pycache__`, `.venv`, `dist`, `build`, etc.
+- If the tree exceeds 10,000 characters, it is automatically truncated at a line boundary to avoid overflowing the model's context window.
+
+### 🌐 Note on Output Language
+
+The repository includes sample files in **two languages**:
+
+| File | Language |
 |---|---|
-| `feature_spec_en.txt` / `team_config_en.yaml` | Inglés |
-| `feature_spec.txt` / `team_config.yaml` | Español |
+| `feature_spec_en.txt` / `team_config_en.yaml` | English |
+| `feature_spec.txt` / `team_config.yaml` | Spanish |
 
-**Comportamiento del modelo (Qwen3 Coder 30B):** el modelo tiende a generar el contenido de los tickets en el mismo idioma del input proporcionado. La flag `--lang` funciona correctamente para cambiar el idioma de salida cuando el input está en inglés (por ejemplo, `--lang Spanish` produce tickets en español). Sin embargo, cuando el input está en español, el modelo prioriza el idioma del contexto y genera los tickets en español independientemente del valor de `--lang`.
+**Model behavior (Qwen3 Coder 30B):** the model tends to generate ticket content in the same language as the provided input. The `--lang` flag works correctly to change the output language when the input is in English (e.g., `--lang Spanish` produces tickets in Spanish). However, when the input is in Spanish, the model prioritizes the context language and generates tickets in Spanish regardless of `--lang`.
 
-**Recomendación:** para demostrar la funcionalidad multilenguaje, usar los archivos en inglés (`*_en.*`) como base y alternar con `--lang Spanish`.
-
----
-
-## 🗺️ Roadmap Futuro
-
-El desarrollo de SprintMaster no termina en este hackathon. Próximas iteraciones:
-
-- 🔗 **Integraciones Nativas** — Conexión directa con Jira, Linear y Trello para inyectar tickets en los tableros.
-- 🔄 **Flujos Personalizados** — Soporte para Scrum vs. Kanban, ajustando redacción y criterios.
-- 📊 **Módulo de Métricas** — Análisis del histórico de velocidad para ajustar automáticamente la estimación de Story Points.
+**Recommendation:** to demonstrate multilingual functionality, use the English files (`*_en.*`) as a base and switch with `--lang Spanish`.
 
 ---
 
-## 👨‍💻 Construido con Kiro
+## 🗺️ Future Roadmap
 
-La orquestación, estructuración y desarrollo de este proyecto se llevó a cabo aplicando metodologías de **desarrollo guiado por especificaciones** con la asistencia del agente de IA [Kiro](https://kiro.dev). Todos los registros y especificaciones de este flujo de trabajo pueden auditarse en la carpeta `.kiro/` de este repositorio.
+SprintMaster's development doesn't end at this hackathon. Upcoming iterations:
+
+- 🔗 **Native Integrations** — Direct connection to Jira, Linear, and Trello to push tickets into boards.
+- 🔄 **Custom Workflows** — Support for Scrum vs. Kanban, adjusting wording and criteria.
+- 📊 **Metrics Module** — Historical velocity analysis to automatically fine-tune Story Point estimation.
+- 🌳 **Advanced Codebase Context** — Support for nested `.gitignore` files, cross-module dependency analysis, and architectural pattern detection.
 
 ---
 
-## 📜 Licencia
+## 👨‍💻 Built with Kiro
 
-Este proyecto es de código abierto y está disponible bajo los términos de la [Licencia MIT](LICENSE).
+The orchestration, structuring, and development of this project was carried out using **spec-driven development** methodologies with the assistance of the AI agent [Kiro](https://kiro.dev). All workflow logs and specifications can be audited in the `.kiro/` folder of this repository.
+
+---
+
+## 📜 License
+
+This project is open source and available under the terms of the [MIT License](LICENSE).

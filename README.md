@@ -40,7 +40,7 @@
 ## 🏗️ Architecture & Main Components
 
 ```
-┌─────────────────────┐       HTTPS        ┌──────────────────┐       Converse API       ┌─────────────────┐
+┌─────────────────────┐       HTTPS         ┌──────────────────┐       Converse API        ┌─────────────────┐
 │   SprintMaster CLI  │ ──────────────────► │  AWS API Gateway │ ────────────────────────► │  Amazon Bedrock │
 │   (Python + Rich)   │ ◄────────────────── │  + AWS Lambda    │ ◄──────────────────────── │  Qwen3 Coder    │
 └─────────────────────┘    JSON Response    └──────────────────┘     Structured JSON       └─────────────────┘

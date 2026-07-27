@@ -18,16 +18,6 @@
        |_|
 ```
 
----
-
-## 📌 Important Links (Hackathon Deliverables)
-
-| Deliverable | Link |
-|---|---|
-| 🎥 Pitch & Demo Video (5 min) | [YouTube/Vimeo Link] |
-| 💻 Interactive Online Demo | [Replit Link] |
-
----
 
 ## 🎯 The Problem & The Solution
 

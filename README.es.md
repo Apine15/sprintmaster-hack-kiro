@@ -18,16 +18,6 @@
        |_|
 ```
 
----
-
-## 📌 Enlaces Importantes (Entregables del Hackathon)
-
-| Entregable | Enlace |
-|---|---|
-| 🎥 Video Presentación (Pitch & Demo 5 min) | [Enlace a YouTube/Vimeo] |
-| 💻 Demo Interactiva en Línea | [Enlace a Replit] |
-
----
 
 ## 🎯 El Problema y la Solución
 
